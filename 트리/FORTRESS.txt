@@ -1,0 +1,114 @@
+//FORTRESS
+
+#include<iostream>
+#include<vector>
+#include<queue>
+#include<math.h>
+using namespace std;
+
+int N;
+int ans = 0;
+int aal = 0;
+
+int big(int x, int y)
+{
+	if (x > y)
+		return x;
+	else return y;
+}
+typedef struct _node
+{
+	struct _node* parent;
+	vector<struct _node*> children;
+	int x;
+	int y;
+	int r;
+}Node;
+
+int find(Node* root)
+{
+	if (root == NULL)
+		return 0;
+
+	int first = 0;
+	int second = 0;
+	
+	for (int i = 0; i < root->children.size(); i++)
+	{
+		second = big(second, find(root->children[i]));
+		if (second > first)
+		{
+			int temp = first;
+			first = second;
+			second = temp;
+		}
+	}
+
+	ans = big(ans, first + second);
+	return first + 1;
+}
+
+int isin(int x1, int y1, int r1, int x2, int y2, int r2)
+{
+	double length = sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+	if ((double)(r1 + r2) > length)
+		return 1;
+	else
+		return 0;
+}
+bool operator<(Node n1, Node n2)
+{
+	return n1.r < n2.r;
+}
+int main()
+{
+	int t_num;
+	cin >> t_num;
+	for (int u = 0; u < t_num; u++)
+	{
+		ans = 0;
+		cin >> N;
+		int x, y, r;
+		priority_queue<Node> pq;
+		for (int i = 0; i < N; i++)
+		{
+			cin >> x >> y >> r;
+			Node n;
+			n.x = x; n.y = y; n.r = r;
+			pq.push(n);
+
+		}
+		Node* p = new Node;
+		p->x = pq.top().x; p->y = pq.top().y; p->r = pq.top().r;
+		pq.pop();
+		Node* root = p;
+		root->parent = NULL;
+		while(!pq.empty())
+		{
+			Node* cur = root;
+			p = new Node;
+			p->x = pq.top().x; p->y = pq.top().y; p->r = pq.top().r;
+			pq.pop();
+			int flag;
+			while (1)
+			{
+				flag = 1;
+				for (int i = 0; i < cur->children.size(); i++)
+				{
+					if (isin(cur->children[i]->x, cur->children[i]->y, cur->children[i]->r, p->x, p->y, p->r))
+					{
+						cur = cur->children[i]; flag = 0; break;
+					}
+				}
+				if (flag)
+				{
+					p->parent = cur;
+					cur->children.push_back(p);
+					break;
+				}
+			}
+		}
+		find(root);
+		cout << ans << endl;
+	}
+}
