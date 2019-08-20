@@ -1,0 +1,61 @@
+//10971
+
+#include<iostream>
+using namespace std;
+
+int num;
+int** arr;
+int ans = 0;
+
+void find(int* visit, int idx, int temp, int first)
+{
+	int flag = 0;
+	for (int i = 0; i < num; i++)
+		if (visit[i])
+			flag++;
+	if (flag == num)
+	{
+		if (arr[idx][first] == 0)
+			return;
+		temp += arr[idx][first];
+		if (ans == 0 || ans > temp)
+			ans = temp;
+		return;
+	}
+
+	for (int i = 0; i < num; i++)
+	{
+		if (!visit[i] && arr[idx][i] != 0)
+		{
+			visit[i] = 1;
+			temp += arr[idx][i];
+			find(visit, i, temp, first);
+			visit[i] = 0;
+			temp -= arr[idx][i];
+		}
+	}
+}
+
+int main()
+{
+	cin >> num;
+	arr = (int**)malloc(sizeof(int*) * num);
+	for (int i = 0; i < num; i++)
+		arr[i] = (int*)malloc(sizeof(int) * num);
+
+	int* visit = (int*)malloc(sizeof(int) * num);
+
+	for (int i = 0; i < num; i++)
+	{
+		for (int j = 0; j < num; j++)
+			cin >> arr[i][j];
+		visit[i] = 0;
+	}
+
+	for (int i = 0; i < num; i++)
+	{
+		visit[i] = 1;	find(visit, i, 0, i); visit[i] = 0;
+	}
+
+	cout << ans << endl;
+}

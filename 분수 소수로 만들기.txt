@@ -1,0 +1,35 @@
+#include<iostream>
+using namespace std;
+
+void f(int a, int b)
+{
+	int* arr = (int*)malloc(sizeof(int) * b);
+	for (int i = 0; i < b; i++)
+		arr[i] = 0;
+	if (a > b)
+		cout << a / b;
+	else
+		cout << "0.";
+	int c = 0;
+	while ((c = a % b) != 0)
+	{
+		if (arr[c] == 1)
+		{
+			cout << "*";
+			break;
+		}
+		else
+			arr[c] = 1;
+		a = c * 10;
+		cout << a / b;
+	}
+	cout << endl;
+}
+
+int main()
+{
+	int a = 0, b = 0;
+	cout << "분자 분모 입력" << endl;
+	cin >> a >> b;
+	f(a, b);
+}

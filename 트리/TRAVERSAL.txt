@@ -1,0 +1,75 @@
+//TRAVERSAL
+
+#include<iostream>
+using namespace std;
+
+int N;
+int pre[101];
+int in[101];
+
+typedef struct _node
+{
+	struct _node* left;
+	struct _node* right;
+	int idx;
+}Node;
+
+Node* root;
+int index;
+Node* find(int start, int end)
+{
+	Node* n = (Node*)malloc(sizeof(Node));
+	n->left = NULL;
+	n->right = NULL;
+	if (start == end)
+	{
+		n->idx = in[start];
+		index++;
+		return n;
+	}
+	int point = -1;
+	for (int i = start; i <= end; i++)
+		if (pre[index] == in[i])
+			point = i;
+	n->idx = pre[index];
+	index++;
+	if (point == start)
+		n->right = find(start + 1, end);
+	else if (point == end)
+		n->left = find(start, end - 1);
+	else
+	{
+		n->left = find(start, point - 1);
+		n->right = find(point + 1, end);
+	}
+	return n;
+}
+
+void pos(Node* root)
+{
+	if (root == NULL)
+		return;
+
+	pos(root->left);
+	pos(root->right);
+	cout << root->idx << " ";
+}
+
+int main()
+{
+	int t_num;
+	cin >> t_num;
+	for (int u = 0; u < t_num; u++)
+	{
+		cin >> N;
+		index = 1;
+		for (int i = 1; i <= N; i++)
+			cin >> pre[i];
+		for (int i = 1; i <= N; i++)
+			cin >> in[i];
+
+		root = find(1, N);
+		pos(root);
+		cout << endl;
+	}
+}

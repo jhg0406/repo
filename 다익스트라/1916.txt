@@ -1,0 +1,84 @@
+//1916
+
+#include<iostream>
+#include<queue>
+using namespace std;
+
+#define INF 100000000
+
+typedef struct _node
+{
+	int idx;
+	int value;
+}Node;
+
+int N, M;
+int arr[1001][1001];
+int start, dest;
+int ans[1001];
+int visit[1001];
+
+bool operator<(Node n1, Node n2)
+{
+	return n1.value < n2.value;
+}
+
+int min(int x, int y)
+{
+	if (x > y)
+		return y;
+	else return x;
+}
+
+void dij()
+{
+	priority_queue<Node> pq;
+	pq.push({ start, 0 });
+
+	while (!pq.empty())
+	{
+		int idx = pq.top().idx;
+		int base = -1*pq.top().value;
+		pq.pop();
+		if (!visit[idx])
+		{
+			visit[idx] = 1;
+			for (int i = 1; i <= N; i++)
+			{
+				if (arr[idx][i] != INF)
+					if (arr[idx][i] + base < ans[i])
+					{
+						ans[i] = arr[idx][i] + base;
+						pq.push({ i, -1*ans[i] });
+					}
+			}
+		}
+	}
+}
+
+int main()
+{
+	cin >> N >> M;
+	for (int i = 0; i < 1001; i++)
+		for (int j = 0; j < 1001; j++)
+			arr[i][j] = INF;
+
+	int x, y, temp;
+	for (int i = 0; i < M; i++)
+	{
+		cin >> x >> y >> temp;
+		arr[x][y] = min(arr[x][y], temp);
+	}
+
+	cin >> start >> dest;
+
+	for (int i = 0; i < 1001; i++)
+	{
+		ans[i] = INF;
+		visit[i] = 0;
+	}
+
+	dij();
+
+	cout << ans[dest] << endl;
+}

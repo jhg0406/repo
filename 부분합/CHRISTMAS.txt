@@ -1,0 +1,80 @@
+//CHRISTMAS
+
+#include<iostream>
+#include<vector>
+#include<algorithm>
+using namespace std;
+
+#define MOD 20091101
+
+int N, K;
+int arr[100001];
+long long sum[100001];
+int mod[100001];
+
+int find1()
+{
+	mod[0] = 0;
+	int ret = 0;
+	vector<long long> count(K, 0);
+	for (int i = 0; i <= N; i++)
+		count[mod[i] * -1]++;
+	for (int i = 0; i < K; i++)
+		if (count[i] >= 2)
+			ret = (ret + (count[i] * (count[i] - 1)) / 2) % MOD;
+	for (int i = 0; i < K; i++)
+		cout << count[i] << " ";
+	cout << endl;
+	return ret;
+}
+void reset(int* many)
+{
+	for (int i = 0; i < K; i++)
+		many[i] = 0;
+}
+int find2()
+{
+	int ret = 0;
+	int many[100001];
+	reset(many);
+	for (int i = N; i >= 1; i--)
+	{
+		int idx = mod[i] * -1;
+		if (++many[idx] == 2)
+		{
+			ret++;
+			reset(many);
+			many[idx] = 1;
+		}
+	}
+	if (many[0])
+		ret++;
+	return ret;
+}
+
+int main()
+{
+	int t_num;
+	cin >> t_num;
+	for (int u = 0; u < t_num; u++)
+	{
+		int a1, a2;
+		cin >> N >> K;
+		for (int i = 1; i <= N; i++)
+			cin >> arr[i];
+		sum[1] = arr[1];
+		mod[1] = -1 * (sum[1] % K);
+		for (int i = 2; i <= N; i++)
+		{
+			sum[i] = sum[i - 1] + arr[i];
+			mod[i] = -1 * (sum[i] % K);
+		}
+
+		a2 = find2();
+
+		sort(mod + 1, mod + N + 1);
+
+		a1 = find1();
+		cout << a1 << " " << a2 << endl;
+	}
+}

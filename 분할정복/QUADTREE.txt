@@ -1,0 +1,41 @@
+//QUADTREE
+
+#include<iostream>
+using namespace std;
+
+int idx;
+
+string rev(string s)
+{
+	string ret = "";
+	idx++;
+	if (s[idx] == 'x')
+	{
+		string s1, s2, s3, s4;
+		s1 = rev(s);
+		s2 = rev(s);
+		s3 = rev(s);
+		s4 = rev(s);
+
+		ret = 'x' + s3 + s4 + s1 + s2;
+	}
+	else
+		ret += s[idx];
+
+	return ret;
+}
+
+int main()
+{
+	int t_num;
+	cin >> t_num;
+	string s;
+	string ans;
+	int size;
+	for (int i = 0; i < t_num; i++)
+	{
+		idx = -1;
+		cin >> s;
+		cout << rev(s) << endl;
+	}
+}

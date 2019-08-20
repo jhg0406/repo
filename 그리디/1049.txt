@@ -1,0 +1,29 @@
+//1049
+
+#include<iostream>
+#include<algorithm>
+using namespace std;
+
+int N, M;
+int p[50];
+int s[50];
+int ans = 0;
+int main()
+{
+	cin >> N >> M;
+	for (int i = 0; i < M; i++)
+	{
+		cin >> p[i] >> s[i];
+	}
+	sort(p, p + M); sort(s, s + M);
+	int simple = s[0]; int package = p[0];
+	if (simple * 6 > package)
+	{
+		ans += package * (N / 6) + simple * (N % 6);
+		if (ans > package * (N / 6 + 1))
+			ans = package * (N / 6 + 1);
+	}
+	else
+		ans += simple * N;
+	cout << ans << endl;
+}

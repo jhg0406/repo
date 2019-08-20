@@ -1,0 +1,53 @@
+//BRACKETS2
+
+#include<iostream>
+#include<stack>
+using namespace std;
+
+int main()
+{
+	int t_num;
+	cin >> t_num;
+	for (int u = 0; u < t_num; u++)
+	{
+		string s;
+		stack<char> Stack;
+		cin >> s;
+		int length = s.length();
+		bool ans = true;
+
+		for (int i = 0; i < length; i++)
+		{
+			char c = s[i];
+			if (c == '(' || c == '{' || c == '[')
+				Stack.push(c);
+			else if (c == ')')
+				if (Stack.empty() || Stack.top() != '(')
+				{
+					ans = false; break;
+				}
+				else
+					Stack.pop();
+			else if (c == '}')
+				if (Stack.empty() || Stack.top() != '{')
+				{
+					ans = false; break;
+				}
+				else
+					Stack.pop();
+			else if (c == ']')
+				if (Stack.empty() || Stack.top() != '[')
+				{
+					ans = false; break;
+				}
+				else
+					Stack.pop();
+		}
+		if (!Stack.empty())
+			ans = false;
+		if (ans)
+			cout << "YES" << endl;
+		else
+			cout << "NO" << endl;
+	}
+}

@@ -1,0 +1,25 @@
+//1929
+
+#include<iostream>
+#include<math.h>
+using namespace std;
+
+int M, N;
+int arr[1000001];
+
+int main()
+{
+	cin >> M >> N;
+	for (int i = 1; i <= N; i++)
+		arr[i] = 1;
+
+	arr[1] = 0;
+	int sqrtn = int(sqrt(N));
+	for (int i = 2; i <= sqrtn; i++)
+		if (arr[i])
+			for (int j = i * i; j <= N; j += i)
+				arr[j] = 0;
+	for (int i = M; i <= N; i++)
+		if (arr[i])
+			printf("%d\n", i);
+}

@@ -1,0 +1,45 @@
+//1725
+
+#include<iostream>
+#include<stack>
+using namespace std;
+
+int N;
+int ans = 0;
+
+int big(int x, int y)
+{
+	if (x > y) return x;
+	else return y;
+}
+
+int main()
+{
+	ans = 0;
+	cin >> N;
+	stack<int> Stack;
+	stack<int> idx;
+	int temp;
+	int i;
+	for (i = 1; i <= N; i++)
+	{
+		cin >> temp;
+		int start = i;
+		while (!Stack.empty())
+		{
+			if (temp > Stack.top())
+				break;
+			ans = big(ans, Stack.top() * (i - idx.top()));
+			start = idx.top();
+			Stack.pop(); idx.pop();
+		}
+		Stack.push(temp);
+		idx.push(start);
+	}
+	while (!Stack.empty())
+	{
+		ans = big(ans, Stack.top() * (i - idx.top()));
+		Stack.pop(); idx.pop();
+	}
+	cout << ans << endl;
+}

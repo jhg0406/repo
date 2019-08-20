@@ -1,0 +1,85 @@
+//¼ÒÇ³ ID : PICNIC
+
+#include<iostream>
+using namespace std;
+
+int areFriend[10][10] = { 0, };
+int taken[10] = { 0, };
+
+int t_square(int a)
+{
+	int ret = 1;
+	for (int i = 0; i < a; i++)
+		ret *= 2;
+	return ret;
+}
+
+int step(int a)
+{
+	int ret = 1;
+	for (int i = a; i > 0; i--)
+		ret *= i;
+	return ret;
+}
+
+void init()
+{
+	for (int i = 0; i < 10; i++)
+	{
+		for (int j = 0; j < 10; j++)
+			areFriend[i][j] = 0;
+		taken[i] = 0;
+	}
+}
+
+int count(int n)
+{
+	int ret = 0;
+	int sum = 0;
+	for (int i = 0; i < n; i++)
+		sum += taken[i];
+	if (sum == n)
+		return 1;
+	
+	for(int i = 0; i<n; i++)
+		for (int j = 0; j < n; j++)
+		{
+			if (!taken[i] && !taken[j] && areFriend[i][j])
+			{
+				taken[i] = taken[j] = 1;
+				ret += count(n);
+				taken[i] = taken[j] = 0;
+			}
+		}
+	//cout << "ret " << ret << endl;
+	return ret;
+}
+
+int main()
+{
+	int t_num;
+	cin >> t_num;
+
+	int* answer = new int[t_num];
+
+	int s_num, num;
+	int x, y;
+	
+
+	for (int i = 0; i < t_num; i++)
+	{
+		cin >> s_num >> num;
+		int half = s_num / 2;
+		init();
+		for (int i = 0; i < num; i++)
+		{
+			cin >> x >> y;
+			areFriend[x][y] = 1;
+		}
+
+		answer[i] = count(s_num);
+		answer[i] = answer[i] / step(half);
+		cout << answer[i] << endl;
+
+	}
+}

@@ -1,0 +1,101 @@
+//FENCE
+
+#include<iostream>
+using namespace std;
+
+int* arr;
+
+int big(int x, int y)
+{
+	if (x > y)
+		return x;
+	else
+		return y;
+}
+
+int small(int x, int y, int& flag)
+{
+	if (x < y)
+		return x;
+	else
+	{
+		flag = 1; return y;
+	}
+}
+
+int merge(int first, int last, int height, int left, int right)
+{
+	if (height == 0)
+		return 0;
+	int ret;
+	int nlh = 0, nrh = 0;
+	while (true)
+	{
+		left--;
+		if (left < first)
+		{
+			left++; break;
+		}
+		if (arr[left] < height)
+		{
+			nlh = arr[left];
+			left++;
+			break;
+		}
+	}
+	while (true)
+	{
+		right++;
+		if (right > last)
+		{
+			right--; break;
+		}
+		if (arr[right] < height)
+		{
+			nrh = arr[right];
+			right--;
+			break;
+		}
+	}
+
+	ret = height * (right - left + 1);
+	ret = big(ret, merge(first, last, nlh, left, right));
+	ret = big(ret, merge(first, last, nrh, left, right));
+	return ret;
+}
+
+int divide(int first, int last)
+{
+	if (first == last)
+		return arr[first];
+	int ret;
+	int mid = (first + last) / 2;
+	ret = divide(first, mid);
+	ret = big(ret, divide(mid + 1, last));
+	if (arr[mid] < arr[mid + 1])
+		return big(ret, merge(first, last, arr[mid], mid, mid));
+	else
+		return big(ret, merge(first, last, arr[mid + 1], mid + 1, mid + 1));
+}
+
+
+int main()
+{
+	int t_num;
+	cin >> t_num;
+	int f_num;
+	int ans;
+	
+	for (int i = 0; i < t_num; i++)
+	{
+		cin >> f_num;
+		arr = (int*)malloc(sizeof(int) * f_num);
+		for (int j = 0; j < f_num; j++)
+			cin >> arr[j];
+
+		ans = divide(0, f_num - 1);
+
+		cout << ans << endl;
+		free(arr);
+	}
+}
