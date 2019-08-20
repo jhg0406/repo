@@ -1,0 +1,113 @@
+//TICTACTOE
+//19683
+
+#include<iostream>
+using namespace std;
+
+char table[3][3];
+int cache[19684];
+int min(int x, int y)
+{
+	if (x > y)
+		return y;
+	else return x;
+}
+
+int change()
+{
+	int ret = 0;
+	int temp = 1;
+	for(int i = 0; i<3; i++)
+		for (int j = 0; j < 3; j++)
+		{
+			if (table[i][j] == '.')
+				ret += temp * 0;
+			else if (table[i][j] == 'o')
+				ret += temp * 1;
+			else
+				ret += temp * 2;
+			temp *= 3;
+		}
+	return ret;
+}
+
+int find2(int x, int y)
+{
+	char temp = table[x][y];
+	if (x == y)
+		if (table[1][1] == temp && table[0][0] == temp && table[2][2] == temp)
+			return 1;
+	if (x + y == 2)
+		if (table[1][1] == temp && table[0][2] == temp && table[2][0] == temp)
+			return 1;
+	if (table[x][1] == temp && table[x][2] == temp && table[x][0] == temp)
+		return 1;
+	if (table[1][y] == temp && table[0][y] == temp && table[2][y] == temp)
+		return 1;
+	return 0;
+}
+
+int find(char turn)
+{
+	int& ret = cache[change()];
+	if (ret != -2)
+		return ret;
+	int minV = 2;
+	for(int i = 0; i<3; i++)
+		for (int j = 0; j < 3; j++)
+			if (table[i][j] == '.')
+			{
+				table[i][j] = turn;
+				if (find2(i, j))
+				{
+					table[i][j] = '.';
+					return 1;
+				}
+				minV = min(minV, find('o' + 'x' - turn));
+				table[i][j] = '.';
+			}
+	if (minV == 2)
+		minV = 0;
+	
+	return ret = -minV;
+}
+
+int main()
+{
+	int t_num;
+	cin >> t_num;
+	for (int u = 0; u < t_num; u++)
+	{
+		for (int i = 0; i < 19684; i++)
+			cache[i] = -2;
+		char turn;
+		int qwe = 0;
+		for (int i = 0; i < 3; i++)
+			for (int j = 0; j < 3; j++)
+			{
+				cin >> turn;
+				if(turn == '.')
+					qwe++;
+				table[i][j] = turn;
+			}
+
+		if (qwe % 2)
+			turn = 'x';
+		else
+			turn = 'o';
+		int ans = find(turn);
+		switch (ans)
+		{
+		case -1:
+			turn = 'o' + 'x' - turn;
+			cout << turn << endl;
+			break;
+		case 0:
+			cout << "TIE" << endl;
+			break;
+		case 1:
+			cout << turn << endl;
+			break;
+		}
+	}
+}

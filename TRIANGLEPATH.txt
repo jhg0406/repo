@@ -1,0 +1,52 @@
+//TRIANGLEPATH
+
+#include<iostream>
+using namespace std;
+
+int height;
+int** arr;
+int** dp;
+
+int main()
+{
+	int t_num;
+	cin >> t_num;
+	int ans;
+	for (int i = 0; i < t_num; i++)
+	{
+		ans = 0;
+		cin >> height;
+		arr = (int**)malloc(sizeof(int*) * height);
+		dp = (int**)malloc(sizeof(int*) * height);
+		for (int j = 0; j < height; j++)
+		{
+			arr[j] = (int*)malloc(sizeof(int) * height);
+			dp[j] = (int*)malloc(sizeof(int) * height);
+		}
+
+		for (int j = 0; j < height; j++)
+			for (int k = 0; k <= j; k++)
+			{
+				cin >> arr[j][k];
+				dp[j][k] = 0;
+			}
+		
+		dp[0][0] = arr[0][0];
+		for(int j = 1; j<height; j++)
+			for (int k = 0; k <= j; k++)
+			{
+				if (k == 0)
+					dp[j][k] = dp[j - 1][k] + arr[j][k];
+				else if (k == j)
+					dp[j][k] = arr[j][k] + dp[j - 1][k - 1];
+
+				dp[j][k] = arr[j][k] + (dp[j - 1][k - 1] > dp[j - 1][k] ? dp[j - 1][k - 1] : dp[j - 1][k]);
+			}
+
+		for (int j = 0; j < height; j++)
+			if (ans < dp[height - 1][j])
+				ans = dp[height - 1][j];
+
+		cout << ans << endl;
+	}
+}

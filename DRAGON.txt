@@ -1,0 +1,181 @@
+//DRAGON
+//30세대부터는 모두 처음에 왼쪽에 있음
+//29세대부터 따지는게 의미있음
+
+#include<iostream>
+using namespace std;
+
+#define MAX 200000002
+
+int n, p, l;
+typedef struct _node
+{
+	struct _node* parent;
+	struct _node* left;
+	struct _node* right;
+	int type;
+}Node;
+
+Node* point;
+Node* cur;
+int arr[30];
+string ans;
+int last;
+
+int get(int flag, int flag2)
+{
+	switch (flag)
+	{
+	case 1:
+		if (flag2)
+			return 2;
+		else
+			return 1;
+	case 2:
+		if (flag2)
+			return 4;
+		else
+			return 1;
+	case 3:
+		if (flag2)
+			return 2;
+		else
+			return 3;
+	case 4:
+		if (flag2)
+			return 4;
+		else
+			return 3;
+	}
+}
+
+void get2(int type)
+{
+	switch (type)
+	{
+	case 1:
+		ans += "+FX";
+		return;
+	case 2:
+		ans += "+YF";
+		return;
+	case 3:
+		ans += "-FX";
+		return;
+	case 4:
+		ans += "-YF";
+		return;
+	}
+}
+
+void find(int start, int num)
+{
+	if (num == 0)
+	{
+		last = start;
+		return;
+	}
+	if (num >= 30 || start <= arr[num]/2)
+	{
+		int flag = cur->type;
+		cur->left = (Node*)malloc(sizeof(Node));
+		cur->left->parent = cur;
+		cur = cur->left;
+		cur->left = NULL;
+		cur->right = NULL;
+		cur->type = get(flag, 0);
+		find(start, num - 1);
+	}
+	else
+	{
+		int flag = cur->type;
+		cur->right = (Node*)malloc(sizeof(Node));
+		cur->right->parent = cur;
+		cur = cur->right;
+		cur->left = NULL;
+		cur->right = NULL;
+		cur->type = get(flag, 1);
+		find(start - arr[num] / 2, num - 1);
+	}
+}
+
+void find2(int num, int gen)
+{
+	if (num >= l)
+		return;
+
+	if (gen == n)
+	{
+		get2(cur->type);
+		cur = cur->parent;
+		find2(num + 3, gen - 1);
+	}
+	else
+	{
+		if (cur->right != NULL)
+		{
+			cur = cur->parent;
+			find2(num, gen - 1);
+		}
+		else if (cur->left != NULL)
+		{
+			int flag = cur->type;
+			cur->right = (Node*)malloc(sizeof(Node));
+			cur->right->parent = cur;
+			cur = cur->right;
+			cur->left = NULL;
+			cur->right = NULL;
+			cur->type = get(flag, 1);
+			find2(num, gen + 1);
+		}
+		else
+		{
+			int flag = cur->type;
+			cur->left = (Node*)malloc(sizeof(Node));
+			cur->left->parent = cur;
+			cur = cur->left;
+			cur->left = NULL;
+			cur->right = NULL;
+			cur->type = get(flag, 0);
+			find2(num, gen + 1);
+		}
+	}
+
+	
+}
+
+int main()
+{
+	int t_num;
+	cin >> t_num;
+	int m = 6;
+	for (int i = 1; i <= 29; i++)
+	{
+		arr[i] = m;
+		m *= 2;
+	}
+	
+	for (int u = 0; u < t_num; u++)
+	{
+		cin >> n >> p >> l;
+		p++;
+		point = (Node*)malloc(sizeof(Node));
+		point->left = NULL;
+		point->right = NULL;
+		point->parent = NULL;
+		point->type = 1;
+		cur = point;
+
+		find(p, n);
+		ans = "";
+		get2(cur->type);
+		if (n != 0)
+		{
+			cur = cur->parent;
+			find2(4 - last, n - 1);
+		}
+		for (int i = last - 1; i <=last-2+l; i++)
+			cout << ans[i];
+		cout << endl;
+	}
+}

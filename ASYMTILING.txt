@@ -1,0 +1,54 @@
+//ASYMTILING
+
+#include<iostream>
+using namespace std;
+
+#define MOD 1000000007
+
+int N;
+int N2;
+int dp[100];
+
+int find(int start)
+{
+	if (start == N)
+		return 1;
+	else if (start > N)
+		return 0;
+
+	int& ret = dp[start];
+	if (ret != -1)
+		return ret;
+	int a1 = find(start + 1);
+	int a2 = find(start + 2);
+	ret = (a1 + a2) % MOD;
+	return ret;
+}
+
+int main()
+{
+	int t_num;
+	cin >> t_num;
+	for (int u = 0; u < t_num; u++)
+	{
+		cin >> N;
+		if (N == 2)
+		{
+			cout << 0 << endl;
+			continue;
+		}
+		N2 = N / 2;
+		for (int i = 0; i < 100; i++)
+			dp[i] = -1;
+		int ans = find(0) + MOD;
+		ans -= dp[N - N2];
+		ans = ans % MOD;
+		if (N % 2 == 0)
+		{
+			ans += MOD;
+			ans -= dp[N - N2 + 1];
+			ans = ans % MOD;
+		}
+		cout << ans << endl;
+	}
+}

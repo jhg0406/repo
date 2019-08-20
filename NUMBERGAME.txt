@@ -1,0 +1,110 @@
+//NUMBERGAME
+
+#include<iostream>
+using namespace std;
+
+#define INF -100000
+
+int n;
+int arr[51];
+int hcache[51][51][2];
+int scache[51][51][2];
+
+void comp(int* a, int* b, int* c, int* d)
+{
+	if (*a - *b < *c - *d)
+	{
+		*a = *c; *b = *d;
+	}
+}
+
+void find(int left, int right, int total, char turn)
+{
+	if (total == 0)
+		return;
+	else if (total == 1)
+	{
+		if (turn == 'h')
+		{
+			hcache[left][right][0] = arr[left];
+			hcache[left][right][1] = 0;
+		}
+		else
+		{
+			scache[left][right][0] = 0;
+			scache[left][right][1] = arr[left];
+		}
+	}
+	else
+	{
+		if (turn == 'h')
+		{
+			int a, b, c , d;
+			if (scache[left+1][right][0] == INF)
+				find(left + 1, right, total - 1, 's');
+			a = scache[left + 1][right][0] + arr[left]; b = scache[left + 1][right][1];
+
+			if (scache[left][right - 1][0] == INF)
+				find(left, right - 1, total - 1, 's');
+			c = scache[left][right - 1][0] + arr[right]; d = scache[left][right - 1][1];
+			comp(&a, &b, &c, &d);
+
+			if (scache[left + 2][right][0] == INF)
+				find(left + 2, right, total - 2, 's');
+			c = scache[left + 2][right][0]; d = scache[left + 2][right][1];
+			comp(&a, &b, &c, &d);
+
+			if (scache[left][right - 2][0] == INF)
+				find(left, right - 2, total - 2, 's');
+			c = scache[left][right - 2][0]; d = scache[left][right - 2][1];
+			comp(&a, &b, &c, &d);
+
+			hcache[left][right][0] = a; hcache[left][right][1] = b;
+		}
+		else
+		{
+			int a, b, c, d;
+			if (hcache[left + 1][right][1] == INF)
+				find(left + 1, right, total - 1, 'h');
+			a = hcache[left + 1][right][0]; b = hcache[left + 1][right][1] + arr[left];
+
+			if (hcache[left][right - 1][1] == INF)
+				find(left, right - 1, total - 1, 'h');
+			c = hcache[left][right - 1][0]; d = hcache[left][right - 1][1] + arr[right];
+			comp(&b, &a, &d, &c);
+
+			if (hcache[left + 2][right][1] == INF)
+				find(left + 2, right, total - 2, 'h');
+			c = hcache[left + 2][right][0]; d = hcache[left + 2][right][1];
+			comp(&b, &a, &d, &c);
+
+			if (hcache[left][right - 2][1] == INF)
+				find(left, right - 2, total - 2, 'h');
+			c = hcache[left][right - 2][0]; d = hcache[left][right - 2][1];
+			comp(&b, &a, &d, &c);
+
+			scache[left][right][0] = a; scache[left][right][1] = b;
+		}
+	}
+}
+
+int main()
+{
+	int t_num;
+	cin >> t_num;
+	for (int u = 0; u < t_num; u++)
+	{
+		cin >> n;
+		for (int i = 1; i <= n; i++)
+			cin >> arr[i];
+		
+		for (int i = 0; i < 51; i++)
+			for (int j = 0; j < 51; j++)
+			{
+				hcache[i][j][1] = INF; scache[i][j][0] = INF;
+			}
+		
+		find(1, n, n, 'h');
+		cout << hcache[1][n][0] - hcache[1][n][1] << endl;
+	}
+}

@@ -1,0 +1,27 @@
+//NUMB3RS
+
+#include<iostream>
+using namespace std;
+
+int N, D, P;
+int arr[50][50];
+int	T;
+int arr2[50];
+
+int main()
+{
+	int t_num; cin >> t_num;
+	for (int u = 0; u < t_num; u++)
+	{
+		cin >> N >> D >> P;
+		for (int i = 0; i < N; i++)
+			for (int j = 0; j < N; j++)
+				cin >> arr[i][j];
+
+		cin >> T;
+		for (int i = 0; i < T; i++)
+			cin >> arr2[i];
+
+
+	}
+}

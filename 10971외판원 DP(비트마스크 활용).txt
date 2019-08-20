@@ -1,0 +1,56 @@
+//10971
+
+#include<iostream>
+using namespace std;
+
+#define INF 10000001
+
+int N;
+int arr[11][11];
+int dp[11][1 << 11][11];
+
+int min(int x, int y)
+{
+	if (x > y)
+		return y;
+	else return x;
+}
+
+int find(int here, int visit, int start)
+{
+	if (visit == (1 << (N + 1)) - 2)
+	{
+		if (!arr[here][start])
+			return INF;
+		return arr[here][start];
+	}
+	int& ret = dp[here][visit][start];
+	if (ret > 0)
+		return ret;
+	ret = INF;
+	for (int i = 1; i <= N; i++)
+	{
+		if (visit & (1 << i)) continue;
+
+		if (arr[here][i])
+			ret = min(ret, find(i, visit + (1 << i), start) + arr[here][i]);
+	}
+	return ret;
+}
+int main()
+{
+	cin >> N;
+	for (int i = 1; i <= N; i++)
+	{
+		for (int j = 1; j <= N; j++)
+			cin >> arr[i][j];
+		for (int j = 0; j < 1 << 11; j++)
+			for(int k = 1; k<=N; k++)
+				dp[i][j][k] = -1;
+	}
+	int ans = INF;
+	for (int i = 1; i <= N; i++)
+		ans = min(ans, find(i, 1 << i, i));
+
+	cout << ans << endl;
+}

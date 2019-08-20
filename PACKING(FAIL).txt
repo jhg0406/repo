@@ -1,0 +1,199 @@
+//PACKING
+/*
+#include<iostream>
+using namespace std;
+
+int N, W;
+string name[100];//PACKING
+
+#include<iostream>
+using namespace std;
+
+int N, W;
+string name[100];
+int vol[100];
+int des[100];
+int dp[100][1001];
+int has[100];
+
+int big(int x, int y)
+{
+	if (x > y)
+		return x;
+	else
+		return y;
+}
+
+int find(int idx, int weight)
+{
+	if (idx == N)
+		return 0;
+	
+	int& ret = dp[idx][weight];
+	if (ret != -1)
+		return ret;
+	ret = 0;
+	ret = find(idx + 1, weight);
+	if (weight + vol[idx] <= W)
+		ret = big(ret, find(idx + 1, weight + vol[idx]) + des[idx]);
+	return ret;
+}
+
+int main()
+{
+	int t_num;
+	cin >> t_num;
+	for (int u = 0; u < t_num; u++)
+	{
+		cin >> N >> W;
+		for (int i = 0; i < N; i++)
+		{
+			cin >> name[i] >> vol[i] >> des[i];
+			for (int j = 0; j < 1001; j++)
+				dp[i][j] = -1;
+		}
+
+		
+		int ans = find(0, 0);
+		cout << ans << " ";
+		int b = ans;
+		int size = 0;
+		int flag;
+		for (int i = 1; i < N; i++)
+		{
+			flag = 0;
+			for (int j = 0; j < 1001; j++)
+			{
+				if (b == dp[i][j])
+				{
+					flag = 1;
+					break;
+				}
+				else if (b == dp[i][j] + des[i - 1])
+				{
+					b = dp[i][j]; break;
+				}
+			}
+			if (flag)
+				has[i - 1] = 0;
+			else
+			{
+				has[i - 1] = 1;
+				size++;
+			}
+		}
+		if (b == 0)
+			has[N - 1] = 0;
+		else
+		{
+			has[N - 1] = 1; size++;
+		}
+		cout << size << endl;
+		for (int i = 0; i < N; i++)
+			if (has[i])
+				cout << name[i] << endl;
+	}
+}
+
+int vol[100];
+int des[100];
+
+typedef struct _node
+{
+	int value;
+	int has[100];
+}Node;
+
+Node* dp[100][1001];
+
+Node* big(Node* n1, Node* n2)
+{
+	if (n1->value > n2->value)
+		return n1;
+	else return n2;
+}
+
+Node base;
+
+Node* find(int idx, int weight)
+{
+	if (idx == N)
+		return &base;
+	else if (weight + vol[idx] > W)
+		return &base;
+
+	Node* ret = dp[idx][weight];
+	if (ret != NULL)
+		return ret;
+	ret = &base;
+	for (int i = idx + 1; i <= N; i++)
+		ret = big(ret, find(i, weight + vol[idx]));
+	if (ret == &base)
+	{
+		Node n;
+		n.value = des[idx];
+		n.has[idx] = 1;
+		ret = &n;
+		return &n;
+	}
+	ret->value += des[idx];
+	ret->has[idx] = 1;
+	return ret;
+}
+
+int main()
+{
+	int t_num;
+	cin >> t_num;
+	for (int u = 0; u < t_num; u++)
+	{
+		cin >> N >> W;
+		for (int i = 0; i < N; i++)
+			cin >> name[i] >> vol[i] >> des[i];
+		base = { 0, };
+		for (int i = 0; i < 100; i++)
+			for (int j = 0; j < 1001; j++)
+				dp[i][j] = NULL;
+
+		Node* ans = find(0, 0);
+		for (int i = 1; i < N; i++)
+			ans = big(ans, find(i, 0));
+		int size = 0;
+		for (int i = 0; i < N; i++)
+			if (ans->has[i] == 1)
+				size++;
+		cout << ans->value << " " << size << endl;
+		for (int i = 0; i < N; i++)
+			if (ans->has[i] == 1)
+				cout << name[i] << endl;
+	}
+}
+*/
+
+#include<iostream>
+using namespace std;
+
+typedef struct _node
+{
+	int a;
+}Node;
+
+Node* find()
+{
+	Node n;
+	n.a = 3;
+	return &n;
+}
+
+int* find2()
+{
+	int a = 3;
+	return &a;
+}
+
+int main()
+{
+	int* p = find2();
+	cout << *p << endl; cout << *p << endl; cout << *p << endl;
+	cout << *p << endl;
+}

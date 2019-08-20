@@ -1,0 +1,63 @@
+//MORSE
+
+#include<iostream>
+using namespace std;
+
+#define MAX 1000000001
+
+int N, M, K;
+long long dp[101][101];
+
+void find(int idx, int x, int y)
+{
+	if (idx == N + M)
+		return;
+	else if (x == 0)
+	{
+		for (int i = 0; i < y; i++)
+			cout << "o";
+		return;
+	}
+	else if (y == 0)
+	{
+		for (int i = 0; i < x; i++)
+			cout << '-';
+		return;
+	}
+	if (K <= dp[x - 1][y])
+	{
+		cout << '-';
+		find(idx + 1, x - 1, y);
+	}
+	else
+	{
+		cout << 'o';
+		K -= dp[x - 1][y];
+		find(idx + 1, x, y - 1);
+	}
+}
+
+int main()
+{
+	int t_num;
+	cin >> t_num;
+	for (int u = 0; u < t_num; u++)
+	{
+		cin >> N >> M >> K;
+		for (int i = 0; i < 101; i++)
+		{
+			dp[i][0] = 1;
+			dp[0][i] = 1;
+		}
+		
+		for (int i = 1; i <= N; i++)
+			for (int j = 1; j <= M; j++)
+			{
+				dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
+				if (dp[i][j] > MAX)
+					dp[i][j] = MAX;
+			}
+		find(0, N, M);
+		cout << endl;
+	}
+}

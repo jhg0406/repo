@@ -1,0 +1,97 @@
+//PI
+
+#include<iostream>
+using namespace std;
+
+#define FAIL 100001
+
+string s;
+int s_size;
+int* dp;
+
+int min(int x, int y)
+{
+	if (x > y)
+		return y;
+	else
+		return x;
+}
+
+int find(int start, int length)
+{
+	if (start == s_size)
+		return 0;
+	else if (start + length > s_size)
+		return FAIL;
+
+	int& ret = dp[start + length];
+	if(ret == FAIL)
+		for(int i = 3; i<=5; i++)
+			ret = min(ret, find(start + length, i));
+
+	int flag = true;
+	int first = s[start] - '0';
+	for (int i = 1; i < length; i++)
+		if (first != s[start + i] - '0')
+		{
+			flag = false; break;
+		}
+	if (flag)
+		return 1+ret;
+	int second = s[start + 1] - '0';
+	flag = true;
+	for (int i = 2; i < length; i++)
+		if (second - first != s[start + i] - s[start + i - 1])
+		{
+			flag = false; break;
+		}
+	if (flag)
+	{
+		if (second - first == 1 || second - first == -1)
+			return 2+ret;
+		else
+			return 5+ret;
+	}
+	flag = true;
+	
+	for (int i = 2; i < length; i++)
+	{
+		if (i % 2 == 0)
+		{
+			if (s[start + i] - '0' != first)
+			{
+				flag = false; break;
+			}
+		}
+		else
+			if (s[start + i] - '0' != second)
+			{
+				flag = false; break;
+			}
+	}
+	if (flag)
+		return 4+ret;
+
+	return 10+ret;
+}
+
+int main()
+{
+	int t_num;
+	cin >> t_num;
+	int ans;
+
+	for (int u = 0; u < t_num; u++)
+	{
+		ans = FAIL;
+		cin >> s;
+		s_size = s.size();
+		dp = (int*)malloc(sizeof(int) * (s_size + 1));
+		for (int i = 0; i < s_size; i++)
+			dp[i] = FAIL;
+		dp[s_size] = 0;
+		for (int i = 3; i <= 5; i++)
+			ans = min(ans, find(0, i));
+		cout << ans << endl;
+	}
+}
