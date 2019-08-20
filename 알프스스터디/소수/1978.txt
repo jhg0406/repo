@@ -1,0 +1,58 @@
+//1978
+
+#include<iostream>
+#include<algorithm>
+using namespace std;
+
+int main()
+{
+	int num; cin >> num;
+	int* arr = (int*)malloc(sizeof(int) * num);
+	for (int i = 0; i < num; i++)
+		cin >> arr[i];
+
+	sort(arr, arr + num);
+
+	int big = arr[num - 1];
+
+	int* dp = (int*)malloc(sizeof(int) * big);
+	int top = -1;
+	int flag;
+	dp[++top] = 2;
+	for (int i = 3; i <= big; i++)
+	{
+		flag = 0;
+		for (int j = 0; j <= top; j++)
+		{
+			if (i % dp[j] == 0)
+			{
+				flag = 1;
+				break;
+			}
+		}
+		if (flag == 0)
+			dp[++top] = i;
+	}
+	int ans = 0;
+	int temp;
+	for (int i = 0; i < num; i++)
+	{
+		flag = 0;
+		temp = arr[i];
+		for (int j = 0; j <= top; j++)
+		{
+			if (temp <= dp[j])
+				break;
+			if (temp % dp[j] == 0)
+			{
+				flag = 1;
+				break;
+			}
+		}
+		if (flag == 0)
+			ans++;
+	}
+	if (arr[0] == 1)
+		ans--;
+	cout << ans << endl;
+}

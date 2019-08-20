@@ -1,0 +1,38 @@
+//1977
+
+#include<iostream>
+using namespace std;
+
+int main()
+{
+	int M; cin >> M;
+	int N; cin >> N;
+
+	int i = 1;
+	int temp;
+	int ans , ans2 = 0;
+	while (1)
+	{
+		temp = i * i;
+		if (temp >= M)
+		{
+			ans = temp;
+			break;
+		}
+		i++;
+	}
+
+	while (1)
+	{
+		temp = i * i;
+		if (temp > N)
+			break;
+		ans2 += temp;
+		i++;
+	}
+
+	if (ans2 == 0)
+		cout << -1 << endl;
+	else
+		cout << ans2 << endl << ans << endl;
+}

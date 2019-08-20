@@ -1,0 +1,27 @@
+#include<iostream>
+#include<vector>
+using namespace std;
+
+int main()
+{
+	int num;
+	cin >> num;
+	vector<int> arr(num+1, 0);
+	arr[0] = 0;
+	for (int i = 1; i < num+1; i++)
+		cin >> arr[i];
+
+	vector<int> ans(num+2, 0);
+	int a, b;
+	ans[0] = 0; ans[1] = 0; ans[2] = arr[1];
+	for (int i = 3; i < num+2; i++)
+	{
+		a = ans[i - 2] + arr[i-1];
+		b = ans[i - 3] + arr[i - 2] + arr[i-1];
+		if (a > b)
+			ans[i] = a;
+		else
+			ans[i] = b;
+	}
+	cout << ans[num+1] << endl;
+}

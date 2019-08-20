@@ -1,0 +1,49 @@
+//11403
+
+#include<iostream>
+#include<queue>
+using namespace std;
+
+#define INF 200
+
+int N;
+int arr[101][101];
+int ans[101][101];
+int visit[101];
+
+int main()
+{
+	cin >> N;
+	for (int i = 1; i <= N; i++)
+	{
+		visit[i] = 0;
+		for (int j = 1; j <= N; j++)
+		{
+			cin >> arr[i][j];
+			ans[i][j] = 0;
+		}
+	}
+
+	for (int i = 1; i <= N; i++)
+	{
+		queue<int> q;
+		q.push(i);
+		int temp;
+		while (!q.empty())
+		{
+			temp = q.front(); q.pop();
+			for (int j = 1; j <= N; j++)
+				if (!ans[i][j] && arr[temp][j])
+				{
+					q.push(j);
+					ans[i][j] = 1;
+				}
+		}
+	}
+	for (int i = 1; i <= N; i++)
+	{
+		for (int j = 1; j <= N; j++)
+			cout << ans[i][j] << " ";
+		cout << endl;
+	}
+}
