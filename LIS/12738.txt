@@ -1,0 +1,50 @@
+//12738
+
+#include<iostream>
+using namespace std;
+
+#define INF 1000000001
+
+int N;
+int arr[1000001];
+int v[1000001];
+
+int find(int start, int end, int temp)
+{
+	if (start + 1 == end)
+	{
+		if (v[start] == temp)
+			return start;
+		else
+			return end;
+	}
+
+	int mid = (start + end) / 2;
+	if (temp < v[mid])
+		return find(start, mid, temp);
+	else if (temp >= v[mid])
+		return find(mid, end, temp);
+}
+
+int main()
+{
+	cin >> N;
+	for (int i = 1; i <= N; i++)
+		cin >> arr[i];
+
+	v[0] = INF;
+	v[1] = arr[1];
+	int eidx = 1;
+	int nidx;
+	for (int i = 2; i <= N; i++)
+	{
+		if (v[eidx] < arr[i])
+			nidx = ++eidx;
+		else if (v[1] >= arr[i])
+			nidx = 1;
+		else
+			nidx = find(1, eidx, arr[i]);
+		v[nidx] = arr[i];
+	}
+	cout << eidx << endl;
+}
