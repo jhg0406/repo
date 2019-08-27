@@ -1,0 +1,91 @@
+//MORDOR
+
+#include<iostream>
+#include<vector>
+using namespace std;
+
+#define ZERO -1
+#define INF 20001
+
+int N, Q;
+int arr[100000];
+
+int min(int x, int y)
+{
+	if (x > y)return y;
+	else return x;
+}
+
+int max(int x, int y)
+{
+	if (x > y)return x;
+	else return y;
+}
+
+typedef pair<int, int> Pair;
+
+struct RMQ
+{
+	vector<int> rangeMin;
+	vector<int> rangeMax;
+	RMQ()
+	{
+		rangeMin.resize(N * 4);
+		rangeMax.resize(N * 4);
+		init(1, 0, N - 1);
+	}
+	Pair init(int node, int left, int right)
+	{
+		if (left == right)
+		{
+			int temp = arr[left];
+			rangeMin[node] = temp;
+			rangeMax[node] = temp;
+			return make_pair(temp, temp);
+		}
+		int mid = (left + right) / 2;
+		Pair p1 = init(node * 2, left, mid);
+		Pair p2 = init(node * 2 + 1, mid + 1, right);
+		rangeMin[node] = min(p1.first, p2.first);
+		rangeMax[node] = max(p1.second, p2.second);
+		return make_pair(rangeMin[node], rangeMax[node]);
+	}
+	Pair query(int node, int left, int right, int start, int end)
+	{
+		if(end < left || start > right)
+			return make_pair(INF, ZERO);
+
+		if (start <= left && right <= end)
+			return make_pair(rangeMin[node], rangeMax[node]);
+
+		int mid = (left + right) / 2;
+		Pair p1 = query(node * 2, left, mid, start, end);
+		Pair p2 = query(node * 2 + 1, mid + 1, right, start, end);
+		return make_pair(min(p1.first, p2.first), max(p1.second, p2.second));
+	}
+	Pair query(int start, int end)
+	{
+		return query(1, 0, N - 1, start, end);
+	}
+};
+
+int main()
+{
+	int t_num;
+	cin >> t_num;
+	for (int u = 0; u < t_num; u++)
+	{
+		cin >> N >> Q;
+		for (int i = 0; i < N; i++)
+			scanf("%d", &arr[i]);
+		RMQ rmq;
+		int x, y;
+		Pair p;
+		for (int i = 0; i < Q; i++)
+		{
+			scanf("%d%d", &x, &y);
+			p = rmq.query(x, y);
+			printf("%d\n", (p.first - p.second > 0 ? p.first - p.second : p.second - p.first));
+		}
+	}
+}
