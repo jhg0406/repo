@@ -1,0 +1,123 @@
+//TRAP
+
+#include<iostream>
+using namespace std;
+
+typedef int KeyType;
+//트립의 한 노드, 트립의 구조는 priority가 높으면 무조건 위에 있고, key가 낮으면 무조건 왼쪽에 있는다
+struct Node
+{
+	KeyType key;
+	int priority, size;
+	Node* left, * right;
+
+	Node(const KeyType& _key) : key(_key), priority(rand()), size(1), left(NULL), right(NULL) {}
+
+	void setLeft(Node* newLeft) { left = newLeft; calcSize(); }
+	void setRight(Node* newRight) { right = newRight;  calcSize(); }
+
+	void calcSize()
+	{
+		size = 1;
+		if (left) { size += left->size; }
+		if (right) { size += right->size; }
+	}
+};
+
+typedef pair<Node*, Node*> NodePair;
+//root를 노드로 하는 트립을 key이하의 값과 초과의 값을갖는
+//두개의 트립으로 분리한다.
+NodePair split(Node* root, KeyType key)
+{
+	if (root == NULL)
+		return NodePair(NULL, NULL);
+	
+	if (root->key >= key)
+	{
+		NodePair np = split(root->left, key);
+		root->setLeft(np.second);
+		return NodePair(np.first, root);
+	}
+	NodePair np = split(root->right, key);
+	root->setRight(np.first);
+	return NodePair(root, np.second);
+}
+//root를 루트로 하는 트립에 새 노드를 삽입한 뒤
+//결과 트립의 루트를 반환한다.
+Node* insert(Node* root, Node* node)
+{
+	if (root == NULL)
+		return node;
+
+	if (root->priority < node->priority)
+	{
+		NodePair np = split(root, node->key);
+		node->setLeft(np.first);
+		node->setRight(np.second);
+		return node;
+	}
+	else if (node->key <= root->key)
+		root->setLeft(insert(root->left, node));
+	else
+		root->setRight(insert(root->right, node));
+	return root;
+}
+
+//두개의 트립 a,b를 합친다. 기본 전제는 a의 모든 key는 b의 가장 작은 키보다 작다
+Node* merge(Node* a, Node* b)
+{
+	if (a == NULL)
+		return b;
+	else if (b == NULL)
+		return a;
+
+	if (a->priority > b->priority)
+	{
+		a->setRight(merge(a->right, b));
+		return a;
+	}
+	else
+	{
+		b->setLeft(merge(a, b->left));
+		return b;
+	}
+}
+//root를 루트로 하는 트립에서 key를 지우고 결과 트립의 루트를 반환한다
+Node* erase(Node* root, KeyType key)
+{
+	if (root == NULL)
+		return NULL;
+	
+	if (key == root->key)
+	{
+		Node* ret = merge(root->left, root->right);
+		delete root;
+		return ret;
+	}
+	else if (key < root->key)
+		root->setLeft(erase(root->left, key));
+	else
+		root->setRight(erase(root->right, key));
+	return root;
+}
+
+//root를 루트로 하는 트리중에서 k번째 원소를 반한한다.
+Node* kth(Node * root, int k)
+{
+	int leftSize = 0;
+	if (root->left != NULL) leftSize = root->left->size;
+	if (k <= leftSize) return kth(root->left, k);
+	if (k == leftSize + 1) return root;
+	return kth(root->right, k - leftSize - 1);
+}
+
+//key보다 작은 키값의 수를 반환한다.
+int countLessThan(Node* root, KeyType key)
+{
+	if (root == NULL)
+		return 0;
+	else if (key <= root->key)
+		return countLessThan(root->left, key);
+	else
+		return 1 + (root->left ? root->left->size : 0) + countLessThan(root->right, key);
+}

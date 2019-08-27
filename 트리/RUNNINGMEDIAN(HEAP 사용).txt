@@ -1,0 +1,53 @@
+//RUNNINGMEDIAN
+
+#include<iostream>
+#include<queue>
+using namespace std;
+
+#define MOD 20090711
+
+int N, a, b;
+long long temp;
+int ans;
+
+int main()
+{
+	int t_num;
+	cin >> t_num;
+	for (int u = 0; u < t_num; u++)
+	{
+		priority_queue<int> lpq, rpq;
+		int lsize = 0, rsize = 0; ans = 1983;
+		cin >> N >> a >> b;
+		temp = 1983;
+		lpq.push(temp); lsize++;
+		for (int i = 1; i < N; i++)
+		{
+			temp = (temp * a + b) % MOD;
+			if (temp <= lpq.top())
+			{
+				lpq.push(temp); lsize++;
+			}
+			else
+			{
+				rpq.push(temp * -1); rsize++;
+			}
+			if (lsize == rsize || lsize == rsize + 1)
+				ans += lpq.top();
+			else if (lsize > rsize)
+			{
+				lsize--; rsize++;
+				rpq.push(lpq.top() * -1); lpq.pop();
+				ans += lpq.top();
+			}
+			else
+			{
+				lsize++; rsize--;
+				lpq.push(rpq.top() * -1); rpq.pop();
+				ans += lpq.top();
+			}
+			ans %= MOD;
+		}
+		printf("%d\n", ans);
+	}
+}
