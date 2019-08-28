@@ -1,0 +1,91 @@
+//MEASURETIME
+
+#include<iostream>
+#include<vector>
+using namespace std;
+
+struct FenwickTree
+
+{
+
+	vector<int> tree;
+
+	FenwickTree(int n) :tree(n + 1)
+
+	{
+
+	}
+
+	//A[0..pos]의 부분 합을 구한다
+
+	int sum(int pos)
+
+	{
+
+		//인덱스가 1부터 시작한다고 생각
+
+		pos++;
+
+		int result = 0;
+
+		while (pos > 0)
+
+		{
+
+			result += tree[pos];
+
+			//다음 구간을 찾기 위해 최종 비트를 지운다
+
+			pos &= (pos - 1);
+
+		}
+
+		return result;
+
+	}
+
+	//A[pos]에 val을 더한다
+
+	void add(int pos, int val)
+
+	{
+
+		pos++;
+
+		while (pos < tree.size())
+
+		{
+
+			tree[pos] += val;
+
+			pos += (pos & -pos);
+
+		}
+
+	}
+
+};
+
+int N;
+
+int main()
+{
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	int t_num; long long ans;
+	cin >> t_num;
+	for (int u = 0; u < t_num; u++)
+	{
+		cin >> N;
+		FenwickTree ft(1000001);
+		ans = 0;
+		int temp;
+		for (int i = 0; i < N; i++)
+		{
+			cin >> temp;
+			ft.add(temp, 1);
+			ans += (long)ft.sum(1000000) - (long)ft.sum(temp);
+		}
+		printf("%d\n", ans);
+	}
+}
