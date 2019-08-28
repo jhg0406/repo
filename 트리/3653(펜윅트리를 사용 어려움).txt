@@ -1,0 +1,62 @@
+//3653
+
+#include<iostream>
+#include<vector>
+using namespace std;
+
+int how;
+int n, m;
+int change[100001];
+
+struct Fen
+{
+	vector<int> v;
+
+	Fen() : v(n + 1 + m) {}
+
+	int sum(int pos)
+	{
+		int ret = 0;
+		while (pos > 0)
+		{
+			ret += v[pos];
+			pos &= (pos - 1);
+		}
+		return ret;
+	}
+	void add(int pos, int val)
+	{
+		while (pos <= m + n)
+		{
+			how++;
+			v[pos] += val;
+			pos += (pos & -pos);
+		}
+	}
+};
+
+int main()
+{
+	int t_num; scanf("%d", &t_num);
+	for (int u = 0; u < t_num; u++)
+	{
+		scanf("%d%d", &n, &m);
+		Fen f;
+		for (int i = 1 + m; i <= n + m; i++)
+		{
+			f.add(i, 1);
+			change[i - m] = i;
+		}
+		int temp; int idx = m;
+		for (int i = 1; i <= m; i++)
+		{
+			scanf("%d", &temp);
+			f.add(idx, 1);
+			f.add(change[temp], -1);
+			printf("%d ", f.sum(change[temp]) - 1);
+			change[temp] = idx;
+			idx--;
+		}
+		printf("\n");
+	}
+}
