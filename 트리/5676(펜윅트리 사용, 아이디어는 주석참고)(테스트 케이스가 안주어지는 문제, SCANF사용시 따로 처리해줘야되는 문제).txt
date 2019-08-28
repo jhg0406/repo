@@ -1,0 +1,76 @@
+//5676
+
+#include<iostream>
+#include<vector>
+using namespace std;
+
+#define INF 1000000
+
+int N, K;
+int arr[100001];
+
+struct Fen
+{
+	vector<int> v;
+	Fen() : v(N + 1) {}
+
+	int sum(int pos)
+	{
+		int ret = 0;
+		while (pos > 0)
+		{
+			ret += v[pos];
+			pos &= (pos - 1);
+		}
+		return ret;
+	}
+
+	void add(int pos, int val)
+	{
+		while (pos < v.size())
+		{
+			v[pos] += val;
+			pos += (pos & -pos);
+		}
+	}
+};
+//출력을 결정하는것은 -1의 개수와 0의 포함유무이다
+//따라서 해당 구간합에서 INF보다 큰값이 나오면 0을 출력
+//구간합에서 1의 개수가 짝수면 +, 홀수면 -을 출력
+int main()
+{
+	int t_num;
+	while (scanf("%d%d", &N, &K) != EOF)
+	{
+		Fen f;
+		int temp;
+		for (int i = 1; i <= N; i++)
+		{
+			scanf("%d", &temp);
+			if (temp > 0) temp = 0; else if (temp < 0) temp = 1; else temp = INF;
+			arr[i] = temp;
+			f.add(i, temp);
+		}
+		char c; int A, B;
+		for (int i = 1; i <= K; i++)
+		{
+			scanf("%d%d", &t_num, &t_num);
+			scanf("%c%d%d", &c, &A, &B);
+			switch (c)
+			{
+			case 'C':
+				if (B > 0) temp = 0; else if (B < 0) temp = 1; else temp = INF;
+				f.add(A, -arr[A] + temp);
+				arr[A] = temp;
+				break;
+			case 'P':
+				temp = f.sum(B) -f.sum(A - 1);
+				if (temp >= INF) printf("0");
+				else if (temp % 2) printf("-");
+				else printf("+");
+				break;
+			}
+		}
+		printf("\n");
+	}
+}
