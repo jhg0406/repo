@@ -1,0 +1,57 @@
+//4195
+
+#include<iostream>
+#include<vector>
+#include<map>
+using namespace std;
+
+int F;
+int top = 0;
+
+vector<int> parent(100001), Rank(100001, 1), Size(100001, 1);
+
+	
+int find(int u)
+{
+	if (u == parent[u]) return u;
+	return parent[u] = find(parent[u]);
+}
+
+void merge(int u, int v)
+{
+	u = find(u); v = find(v);
+	if (u == v)
+		return;
+	if (Rank[u] > Rank[v]) swap(u, v);
+	parent[u] = v;
+	Size[v] += Size[u];
+	if (Rank[u] == Rank[v]) ++Rank[v];
+}
+
+int main()
+{
+	ios_base::sync_with_stdio(0); cin.tie(0);
+	int t_num; cin >> t_num;
+	for (int u = 0; u < t_num; u++)
+	{
+		cin >> F;
+		map<string, int> m;
+		string s1, s2;
+		int idx1,idx2;
+		for (int i = 0; i < 100001; i++)
+			parent[i] = i;
+		for (int i = 0; i < F; i++)
+		{
+			cin >> s1 >> s2;
+			if (m.count(s1) == 0)
+				m[s1] = top++;
+			if (m.count(s2) == 0)
+				m[s2] = top++;
+			idx1 = m[s1];
+			idx2 = m[s2];
+			if (idx1 != idx2)
+				merge(m[s1], m[s2]);
+			cout << Size[find(idx2)] << "\n";
+		}
+	}
+}
