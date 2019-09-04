@@ -1,0 +1,65 @@
+//1707
+
+#include<iostream>
+#include<vector>
+using namespace std;
+
+int V, E;
+vector<vector<int>> v;
+vector<bool> visit;
+vector<bool> status;
+int flag;
+
+void dfs(int here, bool s)
+{
+	if (flag)
+	{
+		visit[here] = true;
+		status[here] = s;
+		int there;
+		for (int i = 0; i < v[here].size(); i++)
+		{
+			there = v[here][i];
+			if (!visit[there])
+				dfs(there, !s);
+			else
+				if (status[there] == s)
+					flag = 0;
+		}
+	}
+}
+
+void dfsAll()
+{
+	for (int i = 1; i <= V; i++)
+		if (!visit[i])
+			dfs(i, true);
+}
+
+int main()
+{
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	int t_num;
+	cin >> t_num;
+	int x, y;
+	for (int u = 0; u < t_num; u++)
+	{
+		cin >> V >> E;
+		v = vector<vector<int>>(V + 1);
+		visit = vector<bool>(V + 1, false);
+		status = vector<bool>(V + 1, false);
+		flag = 1;
+		for (int i = 0; i < E; i++)
+		{
+			cin >> x >> y;
+			v[x].push_back(y);
+			v[y].push_back(x);
+		}
+		dfsAll();
+		if (flag)
+			cout << "YES" << "\n";
+		else
+			cout << "NO" << "\n";
+	}
+}
