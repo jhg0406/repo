@@ -1,0 +1,45 @@
+//1987
+
+#include<iostream>
+#include<vector>
+using namespace std;
+
+int R, C;
+int ans = 1;
+vector<vector<int>> v;
+vector<int> seen;
+
+int big(int x, int y)
+{
+	if (x > y) return x;
+	else return y;
+}
+
+int dfs(int x, int y)
+{
+	if (x < 0 || y < 0 || x >= R || y >= C)
+		return 0;
+	if (seen[v[x][y]])
+		return 0;
+	seen[v[x][y]] = 1;
+	int ret = 0;
+	ret = big(ret, dfs(x - 1, y)); ret = big(ret, dfs(x + 1, y));
+	ret = big(ret, dfs(x, y - 1)); ret = big(ret, dfs(x, y + 1));
+	seen[v[x][y]] = 0;
+	return ret + 1;
+}
+
+int main()
+{
+	ios_base::sync_with_stdio(0); cin.tie(0);
+	cin >> R >> C;
+	v = vector<vector<int>>(R, vector<int>(C));
+	seen = vector<int>(26, 0);
+	char c;
+	for (int i = 0; i < R; i++)
+		for (int j = 0; j < C; j++)
+		{
+			cin >> c; v[i][j] = c - 'A';
+		}
+	cout << dfs(0, 0) << endl;
+}
