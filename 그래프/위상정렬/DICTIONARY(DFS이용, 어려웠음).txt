@@ -1,0 +1,82 @@
+//DICTIONARY
+
+#include<iostream>
+#include<vector>
+#include<algorithm>
+using namespace std;
+
+int N;
+vector<vector<int>> adj;
+vector<bool> seen;
+vector<int> order;
+
+int min(int x, int y)
+{
+	if (x > y) return y;
+	else return x;
+}
+
+void find(vector<string>& s)
+{
+	adj = vector<vector<int>>(26, vector<int>(26, 0));
+
+	for (int i = 1; i < N; i++)
+	{
+		int len = min(s[i - 1].size(), s[i].size());
+		for (int j = 0; j < len; j++)
+			if (s[i - 1][j] != s[i][j])
+			{
+				int a = s[i - 1][j] - 'a';
+				int b = s[i][j] - 'a';
+				adj[a][b] = 1;
+				break;
+			}
+	}
+}
+
+void dfs(int here)
+{
+	seen[here] = 1;
+
+	for (int i = 0; i < 26; i++)
+		if (!seen[i] && adj[here][i])
+			dfs(i);
+	order.push_back(here);
+}
+
+int dfsAll()
+{
+	seen = vector<bool> (26, 0);
+	order.clear();
+	for (int i = 0; i < 26; i++)
+		if (!seen[i])
+			dfs(i);
+	reverse(order.begin(), order.end());
+	int end = order.size();
+	for (int i = 0; i < end; i++)
+		for (int j = i + 1; j < end; j++)
+			if (adj[order[j]][order[i]])
+				return 0;
+	return 1;
+}
+
+int main()
+{
+	ios_base::sync_with_stdio(0); cin.tie(0);
+	int t_num; cin >> t_num;
+	for (int u = 0; u < t_num; u++)
+	{
+		cin >> N;
+		vector<string> s(N);
+		for (int i = 0; i < N; i++)
+			cin >> s[i];
+
+		find(s);
+		if (dfsAll())
+			for (int i = 0; i < order.size(); i++)
+				cout << (char)(order[i] + 'a');
+		else
+			cout << "INVALID HYPOTHESIS";
+		cout << "\n";
+	}
+}
