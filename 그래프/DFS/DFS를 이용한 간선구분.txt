@@ -1,0 +1,33 @@
+#include<vector>
+#include<iostream>
+using namespace std;
+
+//그래프의 인접 리스트 표현
+vector<vector<int>> adj;
+//discovered[i] : i번 정점의 발견 순서 default는 -1
+//finished[i] : dfs(i)가 종료 1, 아니면 0
+vector<int> discovered, finished;
+//지금까지 발견한 정점의 수
+int counter;
+void dfs2(int here)
+{
+	discovered[here] = counter++;
+	int there;
+	for (int i = 0; i < adj[here].size(); i++)
+	{
+		there = adj[here][i];
+		cout << "(" << here << ", " << there << ") : ";
+		if (discovered[there] == -1)
+		{
+			cout << "tree edge" << endl;
+			dfs2(there);
+		}
+		else if (discovered[here] < discovered[there])
+			cout << "forward edge" << endl;
+		else if (finished[there])
+			cout << "cross edge" << endl;
+		else
+			cout << "back edge" << endl;
+	}
+	finished[here] = 1;
+}
