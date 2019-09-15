@@ -1,0 +1,100 @@
+//16954
+
+#include<iostream>
+using namespace std;
+
+char arr[8][8];
+int flag = 1;
+
+bool canGo(int x, int y)
+{
+	if (x < 0 || x>7 || y < 0 || y>7)
+		return false;
+	if (arr[x][y] == '#')
+		return false;
+	return true;
+}
+
+bool canLive(int x, int y)
+{
+	if (x == -1)
+		return true;
+	if (arr[x][y] == '#')
+		return false;
+	return true;
+}
+
+void find(int x, int y, int asd)
+{
+	char arr2[8][8];
+	if (x < 0 || x>7 || y < 0 || y>7)
+		return;
+	for (int i = 0; i < 8; i++)
+		for (int j = 0; j < 8; j++)
+			arr2[i][j] = arr[i][j];
+	if (asd)
+	{
+		for (int i = 6; i >= 0; i--)
+			for (int j = 0; j < 8; j++)
+				arr[i + 1][j] = arr[i][j];
+		for (int j = 0; j < 8; j++)
+			arr[0][j] = '.';
+	}
+
+	if (x == 0 && y == 7)
+	{
+		flag = 0; return;
+	}
+	if (flag)
+		if (canGo(x - 1, y))
+			if (canLive(x - 2, y))
+				find(x - 1, y, asd+1);
+	if (flag)
+		if (canGo(x - 1, y + 1))
+			if (canLive(x - 2, y + 1))
+				find(x - 1, y + 1, asd+1);
+	if (flag)
+		if (canGo(x, y + 1))
+			if (canLive(x - 1, y + 1))
+				find(x, y + 1, asd+1);
+	if (flag)
+		if (canGo(x - 1, y - 1))
+			if (canLive(x - 2, y - 1))
+				find(x - 1, y - 1, asd+1);
+	if (flag)
+		if (canGo(x + 1, y + 1))
+			if (canLive(x, y + 1))
+				find(x + 1, y + 1, asd+1);
+	if (flag)
+		if (canGo(x, y - 1))
+			if (canLive(x - 1, y - 1))
+				find(x, y - 1, asd+1);
+	if (flag)
+		if (canGo(x + 1, y - 1))
+			if (canLive(x, y - 1))
+				find(x + 1, y - 1, asd+1);
+	if (flag)
+		if (canGo(x + 1, y))
+			if (canLive(x, y))
+				find(x + 1, y, asd+1);
+	if (flag)
+		if (canGo(x, y))
+			if (canLive(x - 1, y))
+				find(x, y, asd+1);
+	for (int i = 0; i < 8; i++)
+		for (int j = 0; j < 8; j++)
+			arr[i][j] = arr2[i][j];
+}
+
+int main()
+{
+	for (int i = 0; i < 8; i++)
+		for (int j = 0; j < 8; j++)
+			cin >> arr[i][j];
+
+	find(7, 0, 0);
+	if (!flag)
+		cout << 1 << endl;
+	else
+		cout << 0 << endl;
+}
