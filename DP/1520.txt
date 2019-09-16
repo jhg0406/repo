@@ -1,0 +1,44 @@
+//1520
+
+#include<iostream>
+using namespace std;
+
+int M, N;
+int arr[500][500];
+int dp[500][500];
+
+int find(int x, int y)
+{
+	if (x == M - 1 && y == N - 1)
+		return 1;
+	if (x < 0 || y < 0 || x == M || y == N)
+		return 0;
+	int& ret = dp[x][y];
+	if (ret != -1)
+		return ret;
+	ret = 0;
+	int temp = arr[x][y];
+	if (temp > arr[x - 1][y])
+		ret += find(x - 1, y);
+	if (temp > arr[x + 1][y])
+		ret += find(x + 1, y);
+	if (temp > arr[x][y - 1])
+		ret += find(x, y - 1);
+	if (temp > arr[x][y + 1])
+		ret += find(x, y + 1);
+
+	return ret;
+}
+
+int main()
+{
+	cin >> M >> N;
+	for (int i = 0; i < M; i++)
+		for (int j = 0; j < N; j++)
+		{
+			cin >> arr[i][j];
+			dp[i][j] = -1;
+		}
+
+	cout << find(0, 0) << endl;
+}
