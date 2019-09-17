@@ -1,0 +1,50 @@
+//9252
+
+#include<iostream>
+using namespace std;
+
+string s1, s2;
+int l1, l2;
+int dp[1000][1000];
+int ans;
+
+int big(int x, int y)
+{
+	if (x > y) return x;
+	else return y;
+}
+
+int find(int x, int y)
+{
+	if (x == l1 || y == l2)
+		return 0;
+
+	int& ret = dp[x][y];
+	if (ret != -1)
+		return ret;
+	
+	if (s1[x] == s2[y])
+		ret = find(x + 1, y + 1) + 1;
+	else
+		ret = big(find(x, y + 1), find(x + 1, y));
+	return ret;
+}
+
+int main()
+{
+	ios_base::sync_with_stdio(0); cin.tie(0);
+	cin >> s1 >> s2;
+	l1 = s1.size(); l2 = s2.size();
+	for (int i = 0; i < l1; i++)
+		for (int j = 0; j < l2; j++)
+			dp[i][j] = -1;
+	ans = find(0, 0);
+	cout << ans << endl;
+	int jidx = 0;
+	for(int i = 0; i<l1; i++)
+		for(int j = jidx; j<l2; j++)
+			if (dp[i][j] == ans && s1[i] == s2[j])
+			{
+				ans--; jidx = j + 1; cout << s1[i]; break;
+			}
+}
