@@ -1,0 +1,52 @@
+//2157
+
+#include<iostream>
+using namespace std;
+
+#define INF -5000000
+
+int N, M, K;
+int arr[301][301];
+int dp[301][301];
+
+int big(int x, int y)
+{
+	if (x > y) return x;
+	else return y;
+}
+
+int find(int idx, int m)
+{
+	if (idx == N)
+		return 0;
+	
+	if (m == 1)
+		if (arr[idx][N])
+			return arr[idx][N];
+		else
+			return INF;
+
+	int& ret = dp[idx][m];
+	if (ret != -1)
+		return ret;
+	ret = INF;
+	for (int i = idx + 1; i <= N; i++)
+		if (arr[idx][i])
+			ret = big(ret, arr[idx][i] + find(i, m - 1));
+	return ret;
+}
+
+int main()
+{
+	cin >> N >> M >> K;
+	int x, y, z;
+	for (int i = 0; i < K; i++)
+	{
+		cin >> x >> y >> z;
+		arr[x][y] = big(arr[x][y], z);
+	}
+	for (int i = 1; i <= N; i++)
+		for (int j = 1; j <= N; j++)
+			dp[i][j] = -1;
+	cout << find(1, M - 1) << endl;
+}
