@@ -1,0 +1,43 @@
+//1695
+
+#include<iostream>
+using namespace std;
+
+int N;
+int arr[5000];
+int dp[5000][5000];
+
+int big(int x, int y)
+{
+	if (x > y)return x;
+	else return y;
+}
+
+int find(int start, int end)
+{
+	if (start > end)
+		return 0;
+	else if (start == end)
+		return 1;
+	int& ret = dp[start][end];
+	if (ret != -1)
+		return ret;
+	if (arr[start] == arr[end])
+		ret = find(start + 1, end - 1) + 2;
+	else
+		ret = big(find(start + 1, end), find(start, end - 1));
+	return ret;
+}
+
+int main()
+{
+	ios_base::sync_with_stdio(0); cin.tie(0);
+	cin >> N;
+	for (int i = 0; i < N; i++)
+	{
+		cin >> arr[i];
+		for (int j = 0; j < N; j++)
+			dp[i][j] = -1;
+	}
+	cout << N - find(0, N-1) << endl;
+}
