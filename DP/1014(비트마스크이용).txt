@@ -1,0 +1,72 @@
+//1014
+
+#include<iostream>
+using namespace std;
+
+int N, M;
+int arr[10][10];
+int dp[1 << 10][10];
+
+int big(int x, int y)
+{
+	if (x > y) return x;
+	else return y;
+}
+
+int find(int bitmask, int idx)
+{
+	if (idx == M)
+		return 0;
+
+	int& ret = dp[bitmask][idx];
+	if (ret != -1)
+		return ret;
+	int bt2 = 0;
+	ret = 0;
+	int temp = 1;
+	for (int i = 0; i < N; i++)
+	{
+		if (temp == (bitmask & temp))
+			if (arr[i][idx])
+			{
+				ret++;
+				bt2 = (bt2 | temp);
+				bt2 = (bt2 | (temp >> 1));
+				bt2 = (bt2 | (temp << 1));
+			}
+		temp = (temp << 1);
+	}
+	int ans = -1;
+	for (int i = 0; i < (1<<N); i++)
+		if ((i & bt2) == 0)
+			ans = big(ans, find(i, idx + 1));
+	ret += ans;
+	return ret;
+}
+
+int main()
+{
+	int t_num; cin >> t_num;
+	for (int u = 0; u < t_num; u++)
+	{
+		cin >> N >> M;
+		char c;
+		for (int i = 0; i < N; i++)
+			for (int j = 0; j < M; j++)
+			{
+				cin >> c;
+				if (c == '.')
+					arr[i][j] = 1;
+				else
+					arr[i][j] = 0;
+			}
+		for (int i = 0; i < (1 << N); i++)
+			for (int j = 0; j < M; j++)
+				dp[i][j] = -1;
+
+		int ans = -1;
+		for (int i = 0; i < (1<<N); i++)
+			ans = big(ans, find(i, 0));
+		cout << ans << endl;
+	}
+}
