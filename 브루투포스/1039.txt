@@ -1,0 +1,131 @@
+//1039
+
+#include<iostream>
+#include<algorithm>
+using namespace std;
+
+int N, K;
+int bidulgi[10];
+int arr[7];
+int len;
+int ans;
+bool flag = false;
+
+int big(int x, int y)
+{
+	if (x > y) return x;
+	else return y;
+}
+
+int change()
+{
+	int ret = 0;
+	for (int i = 0; i < len; i++)
+		ret = ret * 10 + arr[i];
+	return ret;
+}
+bool check()
+{
+	if (bidulgi[0] == len - 1)
+		return true;
+	else
+		return false;
+}
+void find(int target, int start, int num, int rest)
+{
+	if (!rest)
+	{
+		ans = big(ans, change()); return;
+	}
+	else
+		if (target == len - 1)
+		{
+			if (flag)
+				ans = big(ans, change());
+			else if (rest % 2)
+			{
+				swap(arr[len - 2], arr[len - 1]);
+				ans = big(ans, change());
+				swap(arr[len - 2], arr[len - 1]);
+			}
+			else
+				ans = big(ans, change());
+			return;
+		}
+
+	if (arr[target] == num)
+	{
+		bidulgi[num]--;
+		if (!bidulgi[num])
+		{
+			int q;
+			for (q = num - 1; q >= 0; q--)
+				if (bidulgi[q])
+					break;
+			find(target + 1, target + 2, q, rest);
+		}
+		else
+			find(target + 1, start == target + 1 ? start + 1 : start, num, rest);
+		bidulgi[num]++;
+	}
+
+	int arr2[7];
+	for (int i = 0; i < len; i++)
+		arr2[i] = arr[i];
+	for (int i = start; i < len; i++)
+	{
+		if (arr[i] == num)
+		{
+			bidulgi[num]--;
+			swap(arr[target], arr[i]);
+			if (bidulgi[num])
+				find(target + 1, target+2, num, rest - 1);
+			else
+			{
+				int q;
+				for (q = num - 1; q >= 0; q--)
+					if (bidulgi[q])
+						break;
+				find(target + 1, target + 2, q, rest - 1);
+			}
+
+			swap(arr[target], arr[i]);
+			bidulgi[num]++;
+			for (int i = 0; i < len; i++)
+				arr[i] = arr2[i];
+		}
+	}
+}
+int main()
+{
+	cin >> N >> K;
+	int mok = N, res;
+	while (mok)
+	{
+		res = mok % 10;
+		arr[len++] = res;
+		bidulgi[res]++;
+		mok /= 10;
+	}
+	for (int i = 0; i < 10; i++)
+		if (bidulgi[i] > 1)
+			flag = true;
+
+
+	reverse(arr, arr + len);
+	if (len == 1)
+		cout << -1 << endl;
+	else if (len == 2 && bidulgi[0])
+		cout << -1 << endl;
+	else if (check())
+		cout << change() << endl;
+	else
+	{
+		int q;
+		for (q = 9; q >= 0; q--)
+			if (bidulgi[q])
+				break;
+		find(0, 1, q, K);
+		cout << ans << endl;
+	}
+}
