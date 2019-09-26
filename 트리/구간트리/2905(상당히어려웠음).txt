@@ -1,0 +1,150 @@
+//2905
+
+#include<iostream>
+#include<limits>
+#include<vector>
+using namespace std;
+
+int N, X;
+const int INF = numeric_limits<int>::max();
+#define INF2 0
+long long ans;
+long long ans2;
+vector<int> arr(N);
+vector<int> arr2(N - X + 1);
+vector<int> arr3(N);
+int fidx;
+bool isEnd = false;
+vector<int> rangeMin;
+vector<int> rangeMax;
+
+int min(int x, int y)
+{
+	if (x > y) return y;
+	else return x;
+}
+
+int max(int x, int y)
+{
+	if (x > y) return x;
+	else return y;
+}
+
+struct RMQ
+{
+	RMQ(const vector<int>& arr, bool flag)
+	{
+		int L = arr.size();
+		if (flag)
+		{
+			rangeMin.resize(L * 4);
+			init(arr, 0, L - 1, 1);
+		}
+		else
+		{
+			rangeMax.resize(L * 4);
+			init2(arr, 0, L - 1, 1);
+		}
+	}
+	int init2(const vector<int>& array, int left, int right, int node)
+	{
+		if (left == right)
+			return rangeMax[node] = array[left];
+		int mid = (left + right) / 2;
+		int leftMax = init2(array, left, mid, node * 2);
+		int rightMax = init2(array, mid + 1, right, node * 2 + 1);
+		return rangeMax[node] = max(leftMax, rightMax);
+	}
+	int init(const vector<int>& array, int left, int right, int node)
+	{
+		if (left == right)
+			return rangeMin[node] = array[left];
+		int mid = (left + right) / 2;
+		int leftMin = init(array, left, mid, node * 2);
+		int rightMin = init(array, mid + 1, right, node * 2 + 1);
+		return rangeMin[node] = min(leftMin, rightMin);
+	}
+	int query(int left, int right, int node, int nodeLeft, int nodeRight)
+	{
+		if (right < nodeLeft || nodeRight < left) return INF;
+		if (left <= nodeLeft && nodeRight <= right)
+			return rangeMin[node];
+		int mid = (nodeLeft + nodeRight) / 2;
+		return min(query(left, right, node * 2, nodeLeft, mid), query(left, right, node * 2 + 1, mid + 1, nodeRight));
+	}
+	int query2(int left, int right, int node, int nodeLeft, int nodeRight)
+	{
+		if (right < nodeLeft || nodeRight < left) return INF2;
+		if (left <= nodeLeft && nodeRight <= right)
+			return rangeMax[node];
+		int mid = (nodeLeft + nodeRight) / 2;
+		return max(query2(left, right, node * 2, nodeLeft, mid), query2(left, right, node * 2 + 1, mid + 1, nodeRight));
+	}
+	int query(int left, int right)
+	{
+		return query(left, right, 1, 0, N - 1);
+	}
+	int query2(int left, int right)
+	{
+		return query2(left, right, 1, 0, N - X);
+	}
+};
+
+int main()
+{
+	ios_base::sync_with_stdio(0); cin.tie(0);
+	cin >> N >> X;
+	arr = vector<int>(N);
+	if (X > N)
+	{
+		int sum = 0, x;
+		for (int i = 0; i < N; i++)
+		{
+			cin >> x; sum += x;
+		}
+		cout << sum << endl << 0 << endl;
+		}
+	else
+	{
+		arr2 = vector<int>(N - X + 1);
+		arr3 = vector<int>(N);
+		for (int i = 0; i < N; i++)
+			cin >> arr[i];
+
+		RMQ r1(arr, true);
+		for (int i = 0; i < N - X + 1; i++)
+			arr2[i] = r1.query(i, i + X - 1);
+		RMQ r2(arr2, false);
+
+		int start, end;
+		for (int i = 0; i < N; i++)
+		{
+			start = i - X + 1;
+			end = i + X - 1;
+			while (start < 0)
+				start++;
+			while (end > N - 1)
+				--end;
+			end = end - X + 1;
+			arr3[i] = r2.query2(start, end);
+		}
+		++ans;
+		int before = arr3[0], num = 0;
+		if (arr[0] > before)
+			ans2 += (long long)(arr[0] - before);
+		for (int i = 1; i < N; i++)
+		{
+			if (arr[i] > arr3[i])
+				ans2 += (long long)(arr[i] - arr3[i]);
+			
+			if (arr3[i] == before && num != X-1)
+				++num;
+			else
+			{	
+				++ans; num = 0; before = arr3[i];
+			}
+		}
+		cout << ans2 << endl << ans << endl;
+	}
+	return 0;
+}
