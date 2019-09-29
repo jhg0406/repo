@@ -1,0 +1,69 @@
+//1722
+
+#include<iostream>
+#include<vector>
+using namespace std;
+
+int N;
+int which;
+
+long long getNum(int num)
+{
+	long long ret = 1;
+	for (long long i = 1; i <= num; i++)
+		ret *= i;
+	return ret;
+}
+
+int main()
+{
+	ios_base::sync_with_stdio(0); cin.tie(0);
+	cin >> N >> which;
+	if (which == 1)
+	{
+		long long k; cin >> k; --k;
+		vector<bool> visit(N + 1, false);
+		vector<int> ans(N);
+		long long div, mok; int aidx = 0;
+		for (int i = 0; i < N - 1; i++)
+		{
+			div = getNum(N - i - 1);
+			mok = k / div + 1;
+			k = k % div;
+			int idx = 1;
+			while (true)
+			{
+				if (!visit[idx])
+				{
+					--mok;
+					if (!mok)
+					{
+						visit[idx] = true;
+						ans[aidx++] = idx; break;
+					}
+				}
+				++idx;
+			}
+		}
+		for (int i = 1; i <= N; i++)
+			if (!visit[i])
+				ans[aidx] = i;
+		for (int i = 0; i < N; i++)
+			cout << ans[i] << " ";
+	}
+	else
+	{
+		vector<int> arr(N);
+		vector<int> minus(N+1, 0);
+		for (int i = 0; i < N; i++)
+			cin >> arr[i];
+		long long ans2 = 0;
+		for (int i = 0; i < N - 1; i++)
+		{
+			ans2 += (long long)(arr[i] - 1 - minus[arr[i]]) * getNum(N - i - 1);
+			for (int j = arr[i]; j <= N; j++)
+				++minus[j];
+		}
+		cout << ans2 + 1 << endl;
+	}
+}
