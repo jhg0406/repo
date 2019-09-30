@@ -1,0 +1,71 @@
+//SORTGAME
+
+#include<iostream>
+#include<vector>
+#include<map>
+#include<queue>
+#include<algorithm>
+using namespace std;
+
+int N;
+map<vector<int>, int> m;
+vector<int> arr;
+priority_queue<pair<int, int>> pq;
+
+bool operator<(pair<int, int>& p1, pair<int, int>& p2)
+{
+	return p1.first < p2.first;
+}
+
+int bfs()
+{
+	vector<int> start(8);
+	for (int i = 0; i < 8; i++)
+		start[i] = i;
+	m[start] = 0;
+	queue<vector<int>> q;
+	q.push(start);
+	int cost;
+	while (!q.empty())
+	{
+		start = q.front(); q.pop();
+		cost = m[start];
+		for(int i = 0; i<8-1; i++)
+			for (int j = i + 2; j <= 8; j++)
+			{
+				reverse(start.begin() + i, start.begin() + j);
+				if (m.count(start) == 0)
+				{
+					m[start] = cost + 1;
+					q.push(start);
+				}
+				reverse(start.begin() + i, start.begin() + j);
+			}
+	}
+	return -1;
+}
+
+int main()
+{
+	ios_base::sync_with_stdio(0); cin.tie(0);
+	bfs();
+	int t_num; cin >> t_num;
+	for (int u = 0; u < t_num; u++)
+	{
+		cin >> N;
+		arr = vector<int>(8);
+		int x;
+		for (int i = 0; i < N; i++)
+		{
+			cin >> x;
+			pq.push(make_pair(-1 * x, i));
+		}
+		for (int i = 0; i < N; i++)
+		{
+			arr[pq.top().second] = i; pq.pop();
+		}
+		for (int i = N; i < 8; i++)
+			arr[i] = i;
+		cout << m[arr] << "\n";
+	}
+}
