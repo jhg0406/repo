@@ -1,0 +1,81 @@
+//1525
+
+#include<iostream>
+#include<vector>
+#include<queue>
+using namespace std;
+
+int fac[10] = { 0, 1 , 2, 6, 24, 120, 720, 7 * 720, 56 * 720, 56 * 720 * 9 };
+vector<int> End;
+vector<int> Start;
+int arrCost[362880];
+int xidx[4] = { 1,-1, 0, 0 };
+int yidx[4] = { 0, 0, 1, -1 };
+
+int getNum(vector<int>& arr)
+{
+	int ret = 0;
+	int minus[9] = { 0, };
+	int temp;
+	for (int i = 0; i < 9; i++)
+	{
+		temp = arr[i];
+		ret += (arr[i]-minus[arr[i]]) * fac[8 - i];
+		for (int j = temp + 1; j < 9; j++)
+			++minus[j];	
+	}
+	return ret;
+}
+
+int bfs()
+{
+	queue<vector<int>> q;
+	queue<int> q2;
+	arrCost[getNum(Start)] = 0;
+	q.push(Start);
+	q2.push(8);
+	int cost, idx1, idx2, mok, res;
+	while (!q.empty())
+	{
+		Start = q.front(); q.pop();
+		idx1 = q2.front(); q2.pop();
+		cost = arrCost[getNum(Start)];
+		for (int i = 0; i < 4; i++)
+		{
+			mok = idx1 / 3+xidx[i]; res = idx1 % 3+yidx[i];
+			if (mok < 0 || mok > 2 || res < 0 || res > 2)
+				continue;
+			idx2 = mok * 3 + res;
+			swap(Start[idx1], Start[idx2]);
+			if (Start == End)
+				return cost + 1;
+			if (arrCost[getNum(Start)] == -1)
+			{
+				arrCost[getNum(Start)] = cost + 1;
+				q.push(Start);
+				q2.push(idx2);
+			}
+			swap(Start[idx1], Start[idx2]);
+		}
+	}
+	return -1;
+}
+
+int main()
+{
+	End = vector<int>(9);
+	Start = vector<int>(9);
+	for (int i = 0; i < 362880; i++)
+		arrCost[i] = -1;
+	for (int i = 0; i < 9; i++)
+	{
+		cin >> End[i];
+		Start[i] = i + 1;
+	}
+	Start[8] = 0;
+
+	if (Start == End)
+		cout << 0 << endl;
+	else
+		cout << bfs() << endl;
+}
