@@ -1,0 +1,107 @@
+//5427
+
+#include<iostream>
+#include<vector>
+#include<queue>
+using namespace std;
+
+int W, H;
+vector<vector<char>> v;
+vector<vector<int>> Cost;
+queue<int> xfire;
+queue<int> yfire;
+int xidx, yidx;
+int xarr[4] = { -1, 1, 0, 0 };
+int yarr[4] = { 0, 0, -1, 1 };
+
+int bfs()
+{
+	queue<int> q1, q2;
+	Cost[xidx][yidx] = 0;
+	q1.push(xidx); q2.push(yidx);
+	int cost, x, y, fsize;
+	int level = 0, End = 1;
+	while (!q1.empty())
+	{
+		fsize = xfire.size();
+		if (level == 0)
+		{
+			for (int i = 0; i < fsize; i++)
+			{
+				xidx = xfire.front(); yidx = yfire.front(); xfire.pop(); yfire.pop();
+				for (int j = 0; j < 4; j++)
+				{
+					x = xidx + xarr[j]; y = yidx + yarr[j];
+					if (x < 0 || x >= H || y < 0 || y >= W)
+						continue;
+					if (v[x][y] == '.')
+					{
+						v[x][y] = '*';
+						xfire.push(x); yfire.push(y);
+					}
+				}
+			}
+		}
+		xidx = q1.front(); yidx = q2.front();
+		q1.pop(); q2.pop();
+		cost = Cost[xidx][yidx];
+		for (int i = 0; i < 4; i++)
+		{
+			x = xidx + xarr[i]; y = yidx + yarr[i];
+			if (v[x][y] == '#' || v[x][y] == '*')
+				continue;
+			if (x == 0 || x == H - 1 || y == 0 || y == W - 1)
+				return cost + 1;
+			if (Cost[x][y] == -1)
+			{
+				q1.push(x); q2.push(y);
+				Cost[x][y] = cost + 1;
+			}
+		}
+		++level;
+		if (level == End)
+		{
+			End = q1.size();
+			level = 0;
+		}
+	}
+	return -1;
+}
+
+int main()
+{
+	ios_base::sync_with_stdio(0); cin.tie(0);
+	int t_num; cin >> t_num;
+	for (int u = 0; u < t_num; u++)
+	{
+		cin >> W >> H;
+		v = vector<vector<char>>(H, vector<char>(W));
+		Cost = vector<vector<int>>(H, vector<int>(W));
+		while (!xfire.empty()) xfire.pop();
+		while (!yfire.empty()) yfire.pop();
+		for (int i = 0; i < H; i++)
+			for (int j = 0; j < W; j++)
+			{
+				cin >> v[i][j];
+				Cost[i][j] = -1;
+				if (v[i][j] == '@')
+				{
+					xidx = i; yidx = j;
+					v[i][j] = '.';
+				}
+				else if (v[i][j] == '*')
+				{
+					xfire.push(i); yfire.push(j);
+				}
+			}
+		int ans;
+		if (xidx == 0 || xidx == H - 1 || yidx == 0 || yidx == W - 1)
+			ans = 0;
+		else
+			ans = bfs();
+		if (ans == -1)
+			cout << "IMPOSSIBLE" << endl;
+		else
+			cout << ans + 1 << endl;
+	}
+}
