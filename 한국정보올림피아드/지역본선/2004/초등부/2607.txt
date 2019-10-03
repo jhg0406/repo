@@ -1,0 +1,47 @@
+//2607
+
+#include<iostream>
+using namespace std;
+
+int N;
+int arr[26];
+int arr2[26];
+
+int main()
+{
+	int ans = 0;
+	cin >> N;
+	string s;
+	cin >> s;
+	int size = s.size(), size2;
+	int life;
+	for (int i = 0; i < size; i++)
+		++arr[s[i] - 'A'];
+	for (int i = 1; i < N; i++)
+	{
+		cin >> s;
+		size2 = s.size();
+		if (size2 < size - 1 || size2 > size + 1)
+			continue;
+		for (int j = 0; j < 26; j++)
+			arr2[j] = 0;
+		for (int j = 0; j < size2; j++)
+			++arr2[s[j] - 'A'];
+		if (size == size2)
+			life = 2;
+		else
+			life = 1;
+		++ans;
+		for(int j = 0; j<26; j++)
+			if (arr[j] != arr2[j])
+			{
+				if (!life)
+				{
+					--ans;
+					break;
+				}
+				--life;
+			}
+	}
+	cout << ans << endl;
+}
