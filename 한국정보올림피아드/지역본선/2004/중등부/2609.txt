@@ -1,0 +1,19 @@
+//2609
+
+#include<iostream>
+using namespace std;
+
+int A, B;
+
+int gcb(int x, int y)
+{
+	if (x < y) return gcb(y, x);
+	else if (y) return gcb(x % y, y);
+	else return x;
+}
+
+int main()
+{
+	cin >> A >> B;
+	cout << gcb(A, B) << endl << A * B / gcb(A, B);
+}
