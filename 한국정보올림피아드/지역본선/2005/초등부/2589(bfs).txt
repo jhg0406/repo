@@ -1,0 +1,79 @@
+//2589
+
+#include<iostream>
+#include<vector>
+#include<queue>
+using namespace std;
+
+int N, M;
+vector<vector<int>> adj;
+vector<int> Cost;
+int num;
+
+int big(int x, int y)
+{
+	if (x > y) return x;
+	else return y;
+}
+
+int bfs(int start)
+{
+	Cost = vector<int>(num + 1, 0);
+	queue<int> q;
+	q.push(start);
+	int idx, cost, there;
+	while (!q.empty())
+	{
+		idx = q.front(); q.pop();
+		cost = Cost[idx];
+		for (int i = 0; i < adj[idx].size(); i++)
+		{
+			there = adj[idx][i];
+			if (!Cost[there])
+			{
+				Cost[there] = cost + 1;
+				q.push(there);
+			}
+		}
+	}
+	return cost;
+}
+
+int main()
+{
+	cin >> N >> M;
+	int arr[50][50];
+	num = 0;
+	char c;
+	for (int i = 0; i < N; i++)
+		for (int j = 0; j < M; j++)
+		{
+			cin >> c;
+			if (c == 'L')
+			{
+				++num;
+				arr[i][j] = num;
+			}
+			else
+				arr[i][j] = 0;
+		}
+	adj = vector<vector<int>>(num + 1);
+	for(int i = 0; i<N; i++)
+		for(int j = 0; j<M; j++)
+			if (arr[i][j])
+			{
+				if (i + 1 != N && arr[i + 1][j])
+				{
+					adj[arr[i][j]].push_back(arr[i + 1][j]);
+					adj[arr[i + 1][j]].push_back(arr[i][j]);
+				}
+				if (j + 1 != M && arr[i][j + 1])
+				{
+					adj[arr[i][j]].push_back(arr[i][j + 1]);
+					adj[arr[i][j + 1]].push_back(arr[i][j]);
+				}
+			}
+	int ans = 0;
+	for (int i = 1; i <= num; i++)
+		ans = big(ans, bfs(i));
+	printf("%d", ans);
