@@ -1,0 +1,36 @@
+//2591
+
+#include<iostream>
+using namespace std;
+
+string s;
+int len;
+int dp[40][2];
+
+int find(int start, int flag)
+{
+	if (start == len)
+		return 1;
+	if (start + flag >= len)
+		return 0;
+	
+	int& ret = dp[start][flag];
+	if (ret != -1)
+		return ret;
+	ret = 0;
+	if (flag && s[start] == '0')
+		return 0;		
+	int num = flag ? (s[start] - '0') * 10 + s[start + 1] - '0' : s[start] - '0';
+	if (num > 35 || num < 1)
+		return 0;
+	ret = find(start + flag + 1, 0) + find(start + flag + 1, 1);
+	return ret;
+}
+
+int main()
+{
+	cin >> s; len = s.length();
+	for (int i = 0; i < len; i++)
+		dp[i][0] = dp[i][1] = -1;
+	cout << (find(0, 0) + find(0, 1))/2;
+}
