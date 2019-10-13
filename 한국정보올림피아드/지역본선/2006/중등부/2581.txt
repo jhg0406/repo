@@ -1,0 +1,28 @@
+//2581
+
+#include<iostream>
+using namespace std;
+
+int N, M;
+int arr[10001];
+
+int main()
+{
+	cin >> N >> M;
+	for(int i = 2; i<=10000; i++)
+		if (!arr[i])
+		{
+			arr[i] = 1;
+			for (int j = i + i; j <= 10000; j += i)
+				arr[j] = 2;
+		}
+	int ans = 0, ans2 = 0;
+	for(int i = N; i<=M; i++)
+		if (arr[i] == 1)
+		{
+			if (!ans2) ans2 = i;
+			ans += i;
+		}
+	if (!ans2) printf("%d", -1);
+	else printf("%d\n%d", ans, ans2);
+}
