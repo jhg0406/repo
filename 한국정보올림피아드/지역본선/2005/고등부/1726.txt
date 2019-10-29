@@ -1,0 +1,80 @@
+//1726
+
+#include<iostream>
+#include<queue>
+using namespace std;
+
+int M, N;
+int arr[101][101];
+int value[101][101][4];
+int sx, sy, st;
+int ex, ey, et;
+queue<int> qx, qy, qt;
+int xtemp[4] = { 0, 0, 1, -1 };
+int ytemp[4] = { 1, -1,0, 0 };
+int ttemp1[4] = { 2, 2, 0, 0 };
+int ttemp2[4] = { 3, 3, 1, 1 };
+
+void bfs(int x, int y, int t)
+{
+	qx.push(x); qy.push(y); qt.push(t);
+	value[x][y][t] = 0;
+	int cost;
+	while (!qx.empty())
+	{
+		x = qx.front(); y = qy.front(); t = qt.front(); qx.pop(); qy.pop(); qt.pop();
+		cost = value[x][y][t];
+		if (x+xtemp[t] >= 1 && x+xtemp[t] <=M && y+ytemp[t] >=1 && y+ytemp[t] <=N
+			&& !arr[x+xtemp[t]][y+ytemp[t]])
+		{
+			if (value[x + xtemp[t]][y + ytemp[t]][t] == -1)
+			{
+				qx.push(x + xtemp[t]); qy.push(y + ytemp[t]); qt.push(t);
+				value[x + xtemp[t]][y + ytemp[t]][t] = cost + 1;
+			}
+			if (x + 2 * xtemp[t] >= 1 && x + 2 * xtemp[t] <= M && y + 2 * ytemp[t] >= 1 && y + 2 * ytemp[t] <= N && !arr[x + 2 * xtemp[t]][y + 2 * ytemp[t]])
+			{
+				if (value[x + 2*xtemp[t]][y + 2*ytemp[t]][t] == -1)
+				{
+					qx.push(x + 2*xtemp[t]); qy.push(y + 2*ytemp[t]); qt.push(t);
+					value[x + 2*xtemp[t]][y + 2*ytemp[t]][t] = cost + 1;
+				}
+				if (x + 3 * xtemp[t] >= 1 && x + 3 * xtemp[t] <= M && y + 3 * ytemp[t] >= 1 && y + 3 * ytemp[t] <= N && !arr[x + 3 * xtemp[t]][y + 3 * ytemp[t]])
+				{
+					if (value[x + 3 * xtemp[t]][y + 3 * ytemp[t]][t] == -1)
+					{
+						qx.push(x + 3 * xtemp[t]); qy.push(y + 3 * ytemp[t]); qt.push(t);
+						value[x + 3 * xtemp[t]][y + 3 * ytemp[t]][t] = cost + 1;
+					}
+				}
+			}
+		}
+		if (value[x][y][ttemp1[t]] == -1)
+		{
+			qx.push(x); qy.push(y); qt.push(ttemp1[t]);
+			value[x][y][ttemp1[t]] = cost + 1;
+		}
+		if (value[x][y][ttemp2[t]] == -1)
+		{
+			qx.push(x); qy.push(y); qt.push(ttemp2[t]);
+			value[x][y][ttemp2[t]] = cost + 1;
+		}
+	}
+}
+
+int main()
+{
+	ios_base::sync_with_stdio(0); cin.tie(0);
+	cin >> M >> N;
+	for (int i = 1; i <= M; i++)
+		for (int j = 1; j <= N; j++)
+		{
+			cin >> arr[i][j];
+			value[i][j][0] = value[i][j][1] = value[i][j][2] = value[i][j][3] = -1;
+		}
+	cin >> sx >> sy >> st >> ex >> ey >> et;
+	--st; --et;
+	bfs(sx, sy, st);
+
+	cout << value[ex][ey][et];	
+}
