@@ -1,0 +1,53 @@
+//2583
+
+#include<iostream>
+#include<queue>
+using namespace std;
+
+int M, N, K;
+int arr[100][100];
+priority_queue<int> av;
+int xtemp[4] = { 1, -1, 0, 0 };
+int ytemp[4] = { 0, 0, 1, -1 };
+
+void bfs(int x, int y)
+{
+	int num = 1;
+	arr[x][y] = 1;
+	queue<int> xq, yq;
+	xq.push(x); yq.push(y);
+	while (!xq.empty())
+	{
+		x = xq.front(); y = yq.front(); xq.pop(); yq.pop();
+		for (int i = 0; i < 4; i++)
+			if (x + xtemp[i] >= 0 && x + xtemp[i] < M && y + ytemp[i] >= 0 && y + ytemp[i] < N && !arr[x + xtemp[i]][y + ytemp[i]])
+			{
+				++num; arr[x+xtemp[i]][y+ytemp[i]] = 1;
+				xq.push(x + xtemp[i]); yq.push(y + ytemp[i]);
+			}
+	}
+	av.push(-1*num);
+}
+
+int main()
+{
+	cin >> M >> N >> K;
+	int x1, y1, x2, y2;
+	for (int i = 0; i < K; i++)
+	{
+		cin >> x1 >> y1 >> x2 >> y2;
+		for (int j = x1; j < x2; j++)
+			for (int k = y1; k < y2; k++)
+				arr[k][j] = 1;
+	}
+	for (int i = 0; i < M; i++)
+		for (int j = 0; j < N; j++)
+			if (!arr[i][j])
+				bfs(i, j);
+
+	cout << av.size() << endl;
+	while (!av.empty())
+	{
+		cout << av.top()*-1 << " "; av.pop();
+	}
+}
