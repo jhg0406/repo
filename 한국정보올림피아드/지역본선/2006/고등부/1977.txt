@@ -1,0 +1,24 @@
+//1977
+
+#include<iostream>
+#include<math.h>
+using namespace std;
+
+int main()
+{
+	int M, N;
+	cin >> M >> N;
+	int is = sqrt(M), ie = sqrt(N);
+	double ds = sqrt(M);
+	is = ((double)is == ds ? is : is + 1);
+
+	if (is > ie)
+		printf("%d\n", -1);
+	else
+	{
+		int ans = 0;
+		for (int i = is; i <= ie; i++)
+			ans += i * i;
+		printf("%d\n%d", ans, is * is);
+	}
+}
