@@ -1,0 +1,45 @@
+//2578
+
+#include<iostream>
+using namespace std;
+
+int x[26];
+int y[26];
+int called[26];
+int num = 0;
+int cx[5];
+int cy[5];
+int cross1 = 0;
+int cross2 = 0;
+
+int main()
+{
+	int a;
+	for(int i = 0; i<5; i++)
+		for (int j = 0; j < 5; j++)
+		{
+			cin >> a;
+			x[a] = i; y[a] = j;
+		}
+
+	for (int i = 1; i < 26; i++)
+	{
+		cin >> a;
+		cx[x[a]]++; if (cx[x[a]] == 5) num++;
+		cy[y[a]]++;	if (cy[y[a]] == 5) num++;
+		if (x[a] == y[a]) cross1++;
+		if (cross1 == 5) {
+			num++; cross1 = 0;
+		}
+		if (x[a] + y[a] == 4)
+			cross2++;
+		if (cross2 == 5) {
+			num++; cross2 = 0;
+		}
+		if (num >= 3)
+		{
+			cout << i << endl;
+			break;
+		}
+	}
+}
