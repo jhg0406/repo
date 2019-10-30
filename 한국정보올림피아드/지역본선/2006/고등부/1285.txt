@@ -1,0 +1,58 @@
+//1285
+
+#include<iostream>
+using namespace std;
+
+int big(int x, int y)
+{
+	if (x > y)
+		return x;
+	else
+		return y;
+}
+
+int main()
+{
+	int N;
+	cin >> N;
+	int MAX = (1 << N);
+	int arr[20][20];
+	char c;
+	for (int i = 0; i < N; i++)
+		for (int j = 0; j < N; j++)
+		{
+			cin >> c;
+			if (c == 'H')
+				arr[i][j] = 1;
+			else
+				arr[i][j] = -1;
+		}
+	int temp;
+	int ans = 0;
+	int ans2;
+	int i2;
+	int bucket[20];
+	for (int i = 0; i < MAX; i++)
+	{
+		ans2 = 0;
+		i2 = i;
+		for (int j = 0; j < N; j++)
+		{
+			if (i2 & 1)
+				bucket[j] = 1;
+			else
+				bucket[j] = -1;
+			i2 = i2 >> 1;
+		}
+		for (int j = 0; j < N; j++)
+		{
+			temp = 0;
+			for (int k = 0; k < N; k++)
+				temp += (bucket[k] * arr[j][k]);
+			temp = temp > 0 ? temp : -1 * temp;
+			ans2 += temp;
+		}
+		ans = big(ans, ans2);
+	}
+	cout << N * N - (N * N + ans) / 2 << endl;
+}
