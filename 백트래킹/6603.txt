@@ -1,0 +1,46 @@
+//6603
+
+#include<iostream>
+#include<vector>
+using namespace std;
+
+int N;
+vector<int> v;
+vector<int> bucket;
+
+void find(int vidx, int bidx, int flag)
+{
+	if (bidx == 6)
+	{
+		if (!flag) return;
+		for (int i = 0; i < 6; i++)
+			cout << bucket[i] << " ";
+		cout << endl; return;
+	}
+	if (vidx == N)
+		return;
+	if (flag)
+	{
+		bucket[bidx] = v[vidx];
+		find(vidx + 1, bidx + 1, 1); find(vidx + 1, bidx + 1, 0);
+	}
+	else
+	{
+		find(vidx + 1, bidx, 1); find(vidx + 1, bidx, 0);
+	}
+}
+
+int main()
+{
+	ios_base::sync_with_stdio(0); cin.tie(0);
+	bucket = vector<int>(6);
+	while (1)
+	{
+		cin >> N; if (!N) break;
+		v = vector<int>(N);
+		for (int i = 0; i < N; i++)
+			cin >> v[i];
+		find(0, 0, 1); find(0, 0, 0);
+		cout << endl;
+	}
+}
