@@ -1,0 +1,41 @@
+//2560
+
+#include<iostream>
+#include<vector>
+using namespace std;
+
+#define MOD 1000
+
+int A, B, D, N;
+vector<int> v;
+
+int main()
+{
+	cin >> A >> B >> D >> N;
+	v = vector<int>(N + 1, 0);
+	v[0] = 1;
+	int start, end;
+	int sum = 1;
+	for (int i = 1; i < N + 1; i++)
+	{
+		start = i - B;
+		end = i - A;
+		if (start < 0 && end < 0)
+			v[i] = 1;
+		else if (start < 0)
+		{
+			sum += v[end];
+			sum %= MOD;
+			v[i] = sum;
+		}
+		else
+		{
+			int q = v[end] - v[start];
+			sum += (q > 0 ? q : 1000 + q);
+			sum %= MOD;
+			v[i] = sum;
+		}
+	}
+	sum = v[N] - (N >= D ? v[N - D] : 0);
+	cout << (sum > 0 ? sum : 1000 + sum);
+}
