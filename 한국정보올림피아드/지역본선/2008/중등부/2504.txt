@@ -1,0 +1,73 @@
+//2504
+
+#include<iostream>
+#include<stack>
+using namespace std;
+
+int change(char c)
+{
+	switch (c)
+	{
+	case '(': return -1;
+	case '[': return -2;
+	case ')': return -3;
+	case ']': return -4;
+	}
+}
+
+void Fail()
+{
+	cout << 0; exit(0);
+}
+
+int main()
+{
+	stack<int> Stack;
+	string s; cin >> s;
+	int temp = 0, ans = 0;
+	for(int i = 0; i<s.size(); i++)
+	{
+		if (s[i] == '(' || s[i] == '[')
+			Stack.push(change(s[i]));
+		else if (s[i] == ')')
+		{
+			if (Stack.empty()) Fail();
+			while (Stack.top() > 0)
+			{
+				temp += Stack.top(); Stack.pop();
+				if (Stack.empty()) Fail();
+			}
+
+			if (Stack.top() == -1)
+			{
+				Stack.pop();
+				Stack.push(temp == 0 ? 2 : temp * 2); temp = 0;
+			}
+			else
+				Fail();
+		}
+		else
+		{
+			if (Stack.empty()) Fail();
+			while (Stack.top() > 0)
+			{
+				temp += Stack.top(); Stack.pop();
+				if (Stack.empty()) Fail();
+			}
+			if (Stack.top() == -2)
+			{
+				Stack.pop();
+				Stack.push(temp == 0 ? 3 : temp * 3); temp = 0;
+			}
+			else
+				Fail();
+		}
+	}
+	while (!Stack.empty())
+	{
+		if (Stack.top() < 0)
+			Fail();
+		ans += Stack.top(); Stack.pop();
+	}
+	cout << ans;
+}
