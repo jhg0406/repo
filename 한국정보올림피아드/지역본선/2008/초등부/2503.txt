@@ -1,0 +1,63 @@
+//2503
+
+#include<iostream>
+#include<map>
+using namespace std;
+
+int N;
+int arr[100];
+int strike[100];
+int ball[100];
+
+int main()
+{
+	cin >> N;
+	for (int i = 0; i < N; i++)
+		cin >> arr[i] >> strike[i] >> ball[i];
+	int x, y, z;
+	int a, b, c;
+	map<int, int> m;
+	int temp, temp2;
+	int ans = 0;
+	for (int i = 1; i <= 999; i++)
+	{
+		m.clear();
+		x = i / 100;
+		y = (i / 10) % 10;
+		z = i % 10;
+		if (!x || !y || !z) continue;
+		if (x == y || x == z || y == z) continue;
+		m[x] = 1;
+		m[y] = 2;
+		m[z] = 3;
+		for (int j = 0; j < N; j++)
+		{
+			temp = temp2 = 0;
+			a = arr[j] / 100;
+			b = (arr[j] / 10) % 10;
+			c = arr[j] % 10;
+			if (m.count(a) != 0)
+				if (m[a] == 1)
+					++temp;
+				else
+					++temp2;
+
+			if (m.count(b) != 0)
+				if (m[b] == 2)
+					++temp;
+				else
+					++temp2;
+
+			if (m.count(c) != 0)
+				if (m[c] == 3)
+					++temp;
+				else
+					++temp2;
+			if (temp != strike[j]) break;
+			if (temp2 != ball[j]) break;
+			if (j == N - 1)
+				++ans;
+		}
+	}
+	printf("%d", ans);
+}
