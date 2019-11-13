@@ -1,0 +1,23 @@
+//2493
+
+#include<iostream>
+#include<stack>
+using namespace std;
+
+int main()
+{
+	ios_base::sync_with_stdio(0); cin.tie(0);
+	int N; cin >> N;
+	int x;
+	stack<pair<int, int>> Stack;
+	for (int i = 0; i < N; i++)
+	{
+		cin >> x;
+		while (1)
+		{
+			if (Stack.empty()) { cout << 0 << " "; Stack.push(make_pair(x, i + 1)); break; }
+			else if (Stack.top().first < x) Stack.pop();
+			else { cout << Stack.top().second << " "; Stack.push(make_pair(x, i + 1)); break; }
+		}
+	}
+}
